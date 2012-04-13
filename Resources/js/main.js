@@ -83,7 +83,8 @@ App.timers = function() {
 	if (App.timer) {
 		clearTimeout(App.timer);
 	}
-	App.timer = setTimeout(App.check,App.prefs[App.serverStatus ? 'check-up' : 'check-down']);
+	console.log(App.prefs[App.serverStatus ? 'check-up' : 'check-down']);
+	App.timer = setTimeout(App.check, App.prefs[App.serverStatus ? 'check-up' : 'check-down']);
 };
 
 // check to see if the server is up
@@ -161,7 +162,7 @@ App.preferences = function() {
 			App.db.execute('UPDATE prefs SET value="'+ App.prefs[x] +'" WHERE `key`="'+ x +'";');
 		}
 
-		App.dbDisconnect
+		App.dbDisconnect();
 		App.timers();
 		
 	}
@@ -205,18 +206,20 @@ App.getRealms = function() {
 	});
 };
 
+// triggered after a user clicks the tray icon
 App.trayClick = function() {
 	
 };
 
+// prepare the ui for viewing
 App.prepareUI = function() {
 	Ti.UI.addTray('/img/dock-icon-blue.png',App.trayClick);
-var menu = Ti.UI.createMenu();
-//mainMenu.appendItem(Ti.UI.createMenuItem("HAI"));
-menu.addItem("Quit", function(e) {
-    alert("Bye!");
-});
-Titanium.UI.setMenu(menu);
+	//var menu = Ti.UI.createMenu();
+	//mainMenu.appendItem(Ti.UI.createMenuItem("HAI"));
+	//menu.addItem("File", function(e) {
+	//    alert("Bye!");
+	//});
+	//Titanium.UI.setMenu(menu);
 	
 	App.initWindow();
 
@@ -229,16 +232,21 @@ Titanium.UI.setMenu(menu);
 	});
 };
 
+// open the registration window
 App.openRegisterWindow = function() {
 	window.open('http://wow-stat.net/register.php');
 };
 
 App.main = function() {
+	// init our main app function
 	App.prepareUI();
 	App.prepareDb();
 	App.getRealms();
 	App.loadPrefs();
+	App.check();
+	App.timers();
 
+	// add event handlers to dom
 	$('select, input').change(App.readPrefs);
 	$('#browse').click(function() {
 		var props = {multiple:false,directories:false,files:true,types:['exe','app','bin','bat','sh']};
@@ -246,11 +254,11 @@ App.main = function() {
 			$('input[name="wow-path"]').val(f[0]);
 		},props);
 	});
+	
+	// setup the years this thing has been going on
 	var dateStart = new Date(2007,02,02);
 	var now = new Date;
-	console.log(now.getTime(),dateStart.getTime())
 	var years = Math.floor((now.getTime()-dateStart.getTime())/(1000*60*60*24*356));
-	console.log(years);
 	$('.years').html(years);
 };
 

@@ -10,7 +10,7 @@
     <publisher>Devin Smith</publisher>
     <url>http://wow-stat.net</url>
     <description>WoW Stat is a World of Warcraft server monitor utility. It is very simple and easy to use. You set the server you wish to monitor, and it does the rest! If your server goes down it will automatically notify you when it is back up, and even relaunch WoW for you if you want.</description>
-    <icon>img/icon.png</icon>
+    <icon>img/icon-blue.png</icon>
     <copyright>2012 by arzynik</copyright>
     <!-- Window Definition - these values can be edited -->
     <window>
