@@ -2,30 +2,26 @@
 	<head>
 		<title>WoW Stat</title>
 		<link rel="stylesheet" href="css/reset.css" type="text/css">
+		<link href="http://fonts.googleapis.com/css?family=Amaranth:400,700" rel="stylesheet" type="text/css">
 		<link rel="stylesheet" href="css/style.css" type="text/css"> 
 		<script src="js/jquery-1.7.2.min.js" type="text/javascript"></script>
 		<script src="js/main.js" type="text/javascript"></script>
 	</head>
 	<body>
+		<h1>Select your server and settings to enjoy </h1>
+		<br />
 		<table>
 			<tr>
-				<td>Server</td>
+				<td>Server:</td>
 				<td><select name="server"></select></td>
 			</tr>
 			<tr>
-				<td>If my server is up, check every</td>
+				<td>If my server is up, check every:</td>
 				<td><select name="check-up"></select></td>
 			</tr>
 			<tr>
-				<td>If my server is down, check every</td>
+				<td>If my server is down, check every:</td>
 				<td><select name="check-down"></select></td>
-			<tr>
-				<td>When my server goes down:</td>
-				<td>
-					<input type="radio" name="notify-down-action" value="nothing" id="notify-down-action-nothing"><label for="notify-down-action-nothing">Do nothing</label><br />
-					<input type="radio" name="notify-down-action" value="notify" id="notify-down-action-notify"><label for="notify-down-action-notify">Notify me</label><br />
-					<input type="radio" name="notify-down-action" value="launch" id="notify-down-action-launch"><label for="notify-down-action-launch">Launch WoW</label>
-				</td>
 			</tr>
 			<tr>
 				<td>When my server comes back up:</td>
@@ -36,9 +32,23 @@
 				</td>
 			</tr>
 			<tr>
-				<td>Path to WoW</td>
-				<td><input type="text" name="wow-path"></td>
+				<td>When my server goes down:</td>
+				<td>
+					<input type="radio" name="notify-down-action" value="nothing" id="notify-down-action-nothing"><label for="notify-down-action-nothing">Do nothing</label><br />
+					<input type="radio" name="notify-down-action" value="notify" id="notify-down-action-notify"><label for="notify-down-action-notify">Notify me</label><br />
+					<input type="radio" name="notify-down-action" value="launch" id="notify-down-action-launch"><label for="notify-down-action-launch">Launch WoW</label>
+				</td>
 			</tr>
+			<tr>
+				<td colspan="2">Path to WoW:</td>
+			</tr>
+			<tr>
+				<td colspan="2">
+					<input type="text" name="wow-path">
+					<button id="browse">Browse...</button>
+				</td>
+			</tr>
+			<tr><td><br /></td></tr>
 			<tr><td colspan="2">
 				<input type="checkbox" id="startup-load" name="startup-load"><label for="startup-load">Launch wow stat when your computer starts</label>
 			</td></tr>
@@ -49,8 +59,12 @@
 		<br />
 		<p>
 			Registering is completly free. All it does for you is lets you know when there are major updates. All it does for me is lets me know people are actulay using this software. You do not have to register ever.
-		
-			Donating is completly optional. It is the best way to say "Thanks!". Your donation will contribute to my beer fund, and effectivly, more drunk development time on this and similiar free software.
-		</p>
+		</p><br />
+		<button onclick="App.openRegisterWindow();">Register...</button>
+		<br /><br />
+		<p>
+			Buying me something is the best way to say "Thanks!". Since I first made this app <span class="years">1</span> years ago, I have recieved 1 donation out of the hundreds of thousands of users.
+		</p><br />
+		<button onclick="Ti.Platform.openURL('http://amzn.com/w/3TTBVAO8C50E')">Devin's Amazon Wishlist...</button>
 	</body>
 </html>

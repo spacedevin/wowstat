@@ -1,6 +1,64 @@
+:focus {
+	outline: none;
+}
+
+::selection {
+	background: transparent;
+}
+::-moz-selection {
+	background: transparent;
+}
+
 body {
-	background: #dedede;
-	color: #111;
+	background: #474747 url(/img/bg.png) no-repeat;
+	background-position: 220px 350px;
+	color: #eee;
 	font: 12px Lucida Grande, Helvetica, sans-serif;
 	margin: 10px;
+	text-shadow: 2px 1px 1px rgba(0, 0, 0, 0.35);
+	overflow: hidden;
+}
+
+td {
+	padding: 2px;
+}
+
+label {
+	padding-left: 5px;
+}
+
+td:first-child {
+	width: 400px;
+}
+
+input, select, button {
+	font-size: 12px;
+}
+
+input[type="text"] {
+	width: 280px;
+	padding: 3px;
+	background: #ddd;
+}
+
+#browse {
+	margin-left: 15px;
+	background: #fff;
+	
+}
+
+#browse, input[type="text"] {
+	height: 23px;
+	border-radius: 3px;
+	border: 1px solid #111;
+}
+
+p {
+	text-align: justify;
+}
+
+h1 {
+	font: 18px Amaranth, Helvetica, sans-serif;
+	font-weight: bold;
+	line-height: 1.4em;
 }

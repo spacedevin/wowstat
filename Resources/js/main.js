@@ -13,8 +13,8 @@ var App = {
 	serverStatus: true
 };
 var MainWindowParams = {
-	width: 1100,
-	height: 300,
+	width: 400,
+	height: 590,
 	resizable: false,
 	maximizable: false
 };
@@ -138,7 +138,7 @@ App.loadPrefs = function() {
 		var el = $('[name="'+ x +'"]');
 		if (el.length > 1) {
 			// radio
-			$('input:radio[value="'+ App.prefs[x] +'"]').attr('checked', true);
+			$('input:radio[name="'+ x +'"][value="'+ App.prefs[x] +'"]').attr('checked', true);
 		} else if (el.attr('type') == 'checkbox') {
 			// checkbox
 			el.attr('checked',App.prefs[x]);
@@ -212,16 +212,36 @@ App.prepareUI = function() {
 		for (x in TimeRange) {
 			$(this).append($('<option></option>')
 				.attr('value',TimeRange[x]*1000)
-				.text(TimeRange[x] + ' seconds')); 
+				.text(TimeRange[x] + ' minutes')); 
 		}
 	});
 };
 
-$(document).ready(function() {	
+App.openRegisterWindow = function() {
+	window.open('http://wow-stat.net/register.php');
+};
+
+App.main = function() {
 	App.prepareUI();
 	App.prepareDb();
 	App.getRealms();
 	App.loadPrefs();
 
 	$('select, input').change(App.readPrefs);
+	$('#browse').click(function() {
+		var props = {multiple:false,directories:false,files:true,types:['exe','app','bin','bat','sh']};
+		Ti.UI.openFileChooserDialog(function(f) {
+			$('input[name="wow-path"]').val(f[0]);
+		},props);
+	});
+	var dateStart = new Date(2007,02,02);
+	var now = new Date;
+	console.log(now.getTime(),dateStart.getTime())
+	var years = Math.floor((now.getTime()-dateStart.getTime())/(1000*60*60*24*356));
+	console.log(years);
+	$('.years').html(years);
+};
+
+$(document).ready(function() {	
+	App.main();
 });
