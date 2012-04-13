@@ -118,7 +118,7 @@ App.check = function() {
 		}
 		
 		$('body').css('background-image','url(/img/bg-' + color + '.png)');
-		App.tray.setIcon('/img/dock-icon-' + color + '.png');
+		App.tray.setIcon('/img/tray-icon-' + color + '.png');
 		Ti.UI.setDockIcon('/img/icon-' + color + '.png');
 		
 		App.serverStatus = status.status;
@@ -232,8 +232,8 @@ App.getRealms = function() {
 	});
 };
 
-// triggered after a user clicks the tray icon
-App.trayClick = function() {
+// launch wow
+App.launch = function() {
 	
 };
 
@@ -241,7 +241,7 @@ App.trayClick = function() {
 App.prepareUI = function() {
 	//App.initWindow();
 
-	App.tray = Ti.UI.addTray('/img/dock-icon-blue.png',App.trayClick);
+	App.tray = Ti.UI.addTray('/img/tray-icon-blue.png');
 	App.tray.setHint('WoW Stat');
 	var trayMenu = Ti.UI.createMenu();
 	App.tray.setMenu(trayMenu);
@@ -254,9 +254,19 @@ App.prepareUI = function() {
 	var quit = Ti.UI.createMenuItem("Quit", function(){
 		Ti.App.exit();
 	});
+	var check = Ti.UI.createMenuItem("Recheck Server", function(){
+		App.check();
+	});
+	var launch = Ti.UI.createMenuItem("Launch WoW", function(){
+		App.launch();
+	});
+	
+	trayMenu.appendItem(check);
+	trayMenu.appendItem(launch);
 	trayMenu.appendItem(hide);
 	trayMenu.appendItem(show);
 	trayMenu.appendItem(quit);
+	
 	
 	
 	
