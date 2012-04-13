@@ -22,13 +22,14 @@ var MainWindowParams = {
 */
 var Defaults = {
 	server: null,
-	'notify-time': 5000,
-	'check-up': 5000,
-	'check-down': 500,
+	'notify-time': 5*1000*60,
+	'check-up': 5*1000*60,
+	'check-down': .5*1000*60,
 	'notify-up-action': 'notify',
 	'notify-down-action': 'notify',
 	'startup-load': true,
 	'startup-check': false,
+	'startup-show-window': true,
 	serial: null,
 	'wow-path': Titanium.platform == 'win32' ? 'C:\\Program Files\\World of Warcraft\\WoW.exe' : '/Applications/World of Warcraft/WoW.app'
 }
@@ -36,11 +37,17 @@ var TimeRange = [.25,.5,1,1.5,2,3,4,5,6,7,8,9,10,15,20,30,60];
 var NotifyRange = [5,15,30,45,60,60*2,60*5,60*15,60*30,60*60];
 var TableName = 'prefs';
 
+// clear the db and reload the defaults
+App.clearDb = function() {
+	App.dbConnect();
+	App.db.execute('DROP TABLE prefs;');
+	App.prepareDb();
+}
 
 // prepare the db for connectivity
 App.prepareDb = function() {
 	App.dbConnect();
-	//App.db.execute('DROP TABLE prefs;');
+
 	var res = App.db.execute('SELECT name FROM sqlite_master WHERE type="table" AND name="'+ TableName +'";');
 	var dbExists = false;
 	while (res.isValidRow()) {
@@ -53,8 +60,14 @@ App.prepareDb = function() {
 	if (dbExists) {
 		var dbprefs = App.db.execute('SELECT * FROM '+ TableName +';');
 		while (dbprefs.isValidRow()) {
-			App.prefs[dbprefs.fieldByName('key')] = dbprefs.fieldByName('value');
+			App.prefs[dbprefs.fieldByName('key')] = App.sterilizePref(dbprefs.fieldByName('value'));
 			dbprefs.next();
+		}
+		
+		for (x in Defaults) {
+			if (!App.prefs[x]) {
+				//App.db.execute('INSERT INTO ' + TableName + ' (`key`,value) VALUES("'+ x +'","' + Defaults[x] + '");');
+			}
 		}
 	} else {
 		App.db.execute('CREATE TABLE IF NOT EXISTS prefs(`key` TEXT PRIMARY KEY, `value` TEXT);');
@@ -80,13 +93,28 @@ App.dbDisconnect = function() {
 	App.db = false;
 };
 
+// convert all prefs
+App.sterilizePrefs = function() {
+	for (x in App.prefs) {
+		App.prefs[x] = App.sterilizePref(App.prefs[x]); 
+	}
+};
+
+// convert data types
+App.sterilizePref = function(pref) {
+	if (pref == "false") pref = false;
+	else if (pref == "true") pref = true;
+	else if (pref == "null") pref = null;
+	else if (pref == parseInt(pref)) pref = parseInt(pref);
+	return pref;
+}
+
 // start or restart timers
 App.timers = function() {
 	if (App.timer) {
-		clearTimeout(App.timer);
+		clearInterval(App.timer);
 	}
-	console.log(App.prefs[App.serverStatus ? 'check-up' : 'check-down']);
-	App.timer = setTimeout(App.check, App.prefs[App.serverStatus ? 'check-up' : 'check-down']);
+	App.timer = setInterval(App.check, App.prefs[App.serverStatus ? 'check-up' : 'check-down']);
 };
 
 // check to see if the server is up
@@ -99,7 +127,7 @@ App.check = function() {
 		if (App.serverStatus !== null && App.serverStatus != status.status) {
 			App.notifyAction(status.status);
 		}
-		console.log(status);
+
 		if (!status.status) {
 			color = 'red'; 
 		} else {
@@ -180,14 +208,21 @@ App.preferences = function() {
 	if (arguments[0]) {
 		// save prefs
 		App.dbConnect();
+		if (arguments[0]['server'] != App.prefs['server']) {
+			var check = true;
+		} else {
+			var check = false;
+		}
 		App.prefs = arguments[0];
-		console.log(App.prefs)
+		App.sterilizePrefs();
+		console.log(App.prefs);
 
 		for (x in App.prefs) {
 			App.db.execute('UPDATE prefs SET value="'+ App.prefs[x] +'" WHERE `key`="'+ x +'";');
 		}
 
 		App.dbDisconnect();
+		App.check();
 		App.timers();
 	}
 	return App.prefs;	
@@ -198,18 +233,10 @@ App.notify = function(title, message) {
 	var notice = Ti.Notification.createNotification();
 	notice.setTitle(title);
 	notice.setMessage(message);
-	notice.setTimeout(5000); //App.prefs['notify-time']
+	notice.setTimeout(App.prefs['notify-time']);
+	notice.setCallback(App.launch);
 	notice.show();
 };
-
-/*
-// set up the main windows size n stuff
-App.initWindow = function() {
-	for (x in MainWindowParams) {
-		App.mainWindow[x] = MainWindowParams[x]
-	};
-};
-*/
 
 // request a remote uri
 App.request = function(url, complete) {
@@ -234,55 +261,57 @@ App.getRealms = function() {
 
 // launch wow
 App.launch = function() {
-	
+	var process = Ti.Process.createProcess([App.prefs['wow-path']]);
+	process.launch();
 };
 
-// prepare the ui for viewing
-App.prepareUI = function() {
-	//App.initWindow();
-
+// prepare the tray menu
+App.prepareTray = function() {
 	App.tray = Ti.UI.addTray('/img/tray-icon-blue.png');
 	App.tray.setHint('WoW Stat');
 	var trayMenu = Ti.UI.createMenu();
 	App.tray.setMenu(trayMenu);
-	var hide = Ti.UI.createMenuItem("Hide", function(){
-		App.mainWindow.hide();
-	});
-	var show = Ti.UI.createMenuItem("Show", function(){
-		App.mainWindow.show();
-	});
-	var quit = Ti.UI.createMenuItem("Quit", function(){
-		Ti.App.exit();
-	});
-	var check = Ti.UI.createMenuItem("Recheck Server", function(){
+	
+	trayMenu.appendItem(Ti.UI.createMenuItem("Recheck Server", function(){
 		App.check();
-	});
-	var launch = Ti.UI.createMenuItem("Launch WoW", function(){
+	}));
+	trayMenu.appendItem(Ti.UI.createMenuItem("Launch WoW", function(){
 		App.launch();
+	}));
+	trayMenu.addSeparatorItem();
+	trayMenu.appendItem(Ti.UI.createMenuItem("Hide WoW Stat", function(){
+		App.mainWindow.hide();
+	}));
+	trayMenu.appendItem(Ti.UI.createMenuItem("Show WoW Stat", function(){
+		App.mainWindow.show();
+	}));
+	trayMenu.appendItem(Ti.UI.createMenuItem("Quit WoW Stat", function(){
+		Ti.App.exit();
+	}));
+}
+
+// prepare the ui for viewing
+App.prepareUI = function() {
+	//App.initWindow();
+	if (App.prefs['startup-show-window']) {
+		App.mainWindow.show();
+	}
+
+	App.prepareTray();
+
+	var menu = Ti.UI.createMenu();
+	var file = Ti.UI.createMenuItem("User");
+	menu.appendItem(file);
+	file.addItem("Clear Preferences", function(e) {
+	    App.clearDb()
+		App.loadPrefs();
 	});
-	
-	trayMenu.appendItem(check);
-	trayMenu.appendItem(launch);
-	trayMenu.appendItem(hide);
-	trayMenu.appendItem(show);
-	trayMenu.appendItem(quit);
-	
-	
-	
-	
-	//var menu = Ti.UI.createMenu();
-	//mainMenu.appendItem(Ti.UI.createMenuItem("HAI"));
-	//menu.addItem("File", function(e) {
-	//    alert("Bye!");
-	//});
-	//Titanium.UI.setMenu(menu);
-	
-	
+	Ti.UI.setMenu(menu);
 
 	$('select[name="check-up"], select[name="check-down"]').each(function() {
 		for (x in TimeRange) {
 			$(this).append($('<option></option>')
-				.attr('value',TimeRange[x]*1000)
+				.attr('value',TimeRange[x]*1000*60)
 				.text(TimeRange[x] + ' minutes')); 
 		}
 	});
@@ -295,12 +324,12 @@ App.openRegisterWindow = function() {
 
 App.main = function() {
 	// init our main app function
-	App.prepareUI();
 	App.prepareDb();
+	App.prepareUI();
 	App.getRealms();
 	App.loadPrefs();
 	App.check();
-	//App.timers();
+	App.timers();
 
 	// add event handlers to dom
 	$('select, input').change(App.readPrefs);
@@ -308,14 +337,20 @@ App.main = function() {
 		var props = {multiple:false,directories:false,files:true,types:['exe','app','bin','bat','sh']};
 		Ti.UI.openFileChooserDialog(function(f) {
 			$('input[name="wow-path"]').val(f[0]);
+			App.readPrefs();
 		},props);
 	});
 	
-	// setup the years this thing has been going on
-	var dateStart = new Date(2007,02,02);
-	var now = new Date;
-	var years = Math.floor((now.getTime()-dateStart.getTime())/(1000*60*60*24*356));
-	$('.years').html(years);
+	$('input[name="wow-path"]').get(0).addEventListener("drop", function(e) {
+		App.readPrefs();
+	}, false);
+	$('input[name="wow-path"]').get(0).addEventListener("dragover", function(e) {
+		$('input[name="wow-path"]').val('');
+	}, false);
+
+	$('.devin').click(function() {
+		Ti.Platform.openURL('http://devin.la');
+	});
 };
 
 $(document).ready(function() {	

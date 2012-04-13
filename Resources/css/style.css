@@ -11,9 +11,9 @@
 
 body {
 	background: #474747 url(/img/bg-blue.png) no-repeat;
-	background-position: 220px 350px;
+	background-position: 270px 380px;
 	color: #eee;
-	font: 12px Lucida Grande, Helvetica, sans-serif;
+	font: 12px "Lucida Grande", Helvetica, Arial, Verdana, sans-serif;
 	margin: 10px;
 	text-shadow: 2px 1px 1px rgba(0, 0, 0, 0.35);
 	overflow: hidden;
@@ -44,7 +44,6 @@ input[type="text"] {
 #browse {
 	margin-left: 15px;
 	background: #fff;
-	
 }
 
 #browse, input[type="text"] {
@@ -61,4 +60,25 @@ h1 {
 	font: 18px Amaranth, Helvetica, sans-serif;
 	font-weight: bold;
 	line-height: 1.4em;
+}
+
+button {
+	padding: 3px;
+	margin-left: 0;
+}
+
+.header {
+	margin-bottom: 18px;
+}
+
+.footer {
+	margin-top: 40px;
+}
+
+.devin {
+	float: left;
+	height: 50px;
+	width: 50px;
+	margin-right: 15px;
+	cursor: pointer;
 }
