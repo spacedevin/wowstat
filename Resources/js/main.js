@@ -26,9 +26,9 @@ var Defaults = {
 	'notify-up-action': 'notify',
 	'notify-down-action': 'notify',
 	'startup-load': true,
-	'startup-check': true,
+	'startup-check': false,
 	serial: null,
-	'wow-path': Titanium.platform == 'win32' ? 'C:\\Program Files\\World of Warcraft\\WoW.exe' : '/Applications/System\ Preferences.app'
+	'wow-path': Titanium.platform == 'win32' ? 'C:\\Program Files\\World of Warcraft\\WoW.exe' : '/Applications/World of Warcraft/WoW.app'
 }
 var TimeRange = [.25,.5,1,1.5,2,3,4,5,6,7,8,9,10,15,20,30,60];
 var NotifyRange = [5,15,30,45,60,60*2,60*5,60*15,60*30,60*60];
@@ -205,7 +205,19 @@ App.getRealms = function() {
 	});
 };
 
+App.trayClick = function() {
+	
+};
+
 App.prepareUI = function() {
+	Ti.UI.addTray('/img/dock-icon-blue.png',App.trayClick);
+var menu = Ti.UI.createMenu();
+//mainMenu.appendItem(Ti.UI.createMenuItem("HAI"));
+menu.addItem("Quit", function(e) {
+    alert("Bye!");
+});
+Titanium.UI.setMenu(menu);
+	
 	App.initWindow();
 
 	$('select[name="check-up"], select[name="check-down"]').each(function() {
