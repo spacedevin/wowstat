@@ -12,12 +12,14 @@ var App = {
 	prefs: [],
 	serverStatus: null
 };
+/*
 var MainWindowParams = {
 	width: 400,
 	height: 590,
 	resizable: false,
 	maximizable: false
 };
+*/
 var Defaults = {
 	server: null,
 	'notify-time': 5000,
@@ -200,12 +202,14 @@ App.notify = function(title, message) {
 	notice.show();
 };
 
+/*
 // set up the main windows size n stuff
 App.initWindow = function() {
 	for (x in MainWindowParams) {
 		App.mainWindow[x] = MainWindowParams[x]
 	};
 };
+*/
 
 // request a remote uri
 App.request = function(url, complete) {
@@ -235,7 +239,7 @@ App.trayClick = function() {
 
 // prepare the ui for viewing
 App.prepareUI = function() {
-	App.initWindow();
+	//App.initWindow();
 
 	App.tray = Ti.UI.addTray('/img/dock-icon-blue.png',App.trayClick);
 	App.tray.setHint('WoW Stat');

@@ -15,18 +15,18 @@
     <!-- Window Definition - these values can be edited -->
     <window>
         <id>initial</id>
-        <title>DeskTest</title>
+        <title>WoW Stat</title>
         <url>app://index.html</url>
-        <width>700</width>
+        <width>400</width>
         <max-width>3000</max-width>
         <min-width>0</min-width>
-        <height>500</height>
+        <height>590</height>
         <max-height>3000</max-height>
         <min-height>0</min-height>
         <fullscreen>false</fullscreen>
-        <resizable>true</resizable>
+        <resizable>false</resizable>
         <chrome scrollbars="true">true</chrome>
-        <maximizable>true</maximizable>
+        <maximizable>false</maximizable>
         <minimizable>true</minimizable>
         <closeable>true</closeable>
     </window>
