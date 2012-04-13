@@ -1,3 +1,11 @@
+/**
+ * The WoW Stat App code
+ * 
+ * @author:		Devin Smith
+ * @date:		2012-04-12
+ * 
+ */
+
 var Ti = Titanium;
 var App = {
 	mainWindow: Ti.UI.getMainWindow(),
@@ -12,15 +20,20 @@ var MainWindowParams = {
 };
 var Defaults = {
 	server: null,
+	'notify-time': 5000,
 	'check-up': 5000,
 	'check-down': 500,
-	'notify-action': 'notify',
+	'notify-up-action': 'notify',
+	'notify-down-action': 'notify',
 	'startup-load': true,
 	'startup-check': true,
-	serial: null
+	serial: null,
+	'wow-path': Titanium.platform == 'win32' ? 'C:\\Program Files\\World of Warcraft\\WoW.exe' : '/Applications/System\ Preferences.app'
 }
-var TimeRange = [.25,.5,1,1.5,2,3,4,5,6,7,8,9,10,15,20,30];
+var TimeRange = [.25,.5,1,1.5,2,3,4,5,6,7,8,9,10,15,20,30,60];
+var NotifyRange = [5,15,30,45,60,60*2,60*5,60*15,60*30,60*60];
 var TableName = 'prefs';
+
 
 // prepare the db for connectivity
 App.prepareDb = function() {
@@ -48,15 +61,22 @@ App.prepareDb = function() {
 			App.db.execute('INSERT INTO ' + TableName + ' (`key`,value) VALUES("'+ x +'","' + Defaults[x] + '");');
 		}
 	}
-	App.db.close();
-	App.db = false;
-	App.loadPrefs();
-}
+	
+	App.dbDisconnect();
+};
 
 // connect to the database
 App.dbConnect = function() {
-	App.db = Ti.Database.open('wowstat');
-}
+	if (!App.db) {
+		App.db = Ti.Database.open('wowstat');
+	}
+};
+
+// disconnect from the db
+App.dbDisconnect = function() {
+	App.db.close();
+	App.db = false;
+};
 
 // start or restart timers
 App.timers = function() {
@@ -64,7 +84,7 @@ App.timers = function() {
 		clearTimeout(App.timer);
 	}
 	App.timer = setTimeout(App.check,App.prefs[App.serverStatus ? 'check-up' : 'check-down']);
-}
+};
 
 // check to see if the server is up
 App.check = function() {
@@ -77,17 +97,17 @@ App.check = function() {
 		}
 		App.serverStatus = status.status;
 	});
-}
+};
 
 // notify the user by their prefered action
 App.notifyAction = function(status) {
 	var realm = App.realm(App.prefs['server']);
 	if (status) {
-		App.notify(realm.name + 'is up!', realm.name + ' is back up! Click here to launch WoW.');
+		App.notify(realm.name + ' is up! :)', realm.name + ' is back up! Click here to launch WoW.');
 	} else {
-		App.notify(realm.name + 'is down!', realm.name + ' has gone down. You will be notified again when it is back up.');
+		App.notify(realm.name + ' is down! :(', realm.name + ' has gone down. You will be notified again when it is back up.');
 	}
-}
+};
 
 // get the realms info. only needed when a status changes
 App.realm = function(realm) {
@@ -97,33 +117,37 @@ App.realm = function(realm) {
 		}
 	}
 	return null;
-}
+};
 
 // read the prefs from dom and store them
 App.readPrefs = function() {
 	var prefs = {};
-	$('select, input:radio:checked').each(function() {
+	$('select, input:radio:checked, input:text').each(function() {
 		prefs[$(this).attr('name')] = $(this).val();
 	});
 	$('input:checkbox').each(function(){
 		prefs[$(this).attr('name')] = $(this).attr('checked') ? true : false;
 	});
 	App.preferences(prefs);
-}
+};
 
 // load the prefs to the form
 App.loadPrefs = function() {
-		console.log(App.prefs);
-	$('select, input:radio:checked, input:checkbox').each(function() {
-		$(this).val(App.prefs[$(this).attr('name')]);
-	});
-	$('input:checkbox').each(function(){
-		return;
-		console.log($(this).attr('name'), App.prefs[$(this).attr('name')]);
-		$(this).checked(App.prefs[$(this).attr('name')]);
-	});
-}
-
+	console.log(App.prefs);
+	for (x in App.prefs) {
+		var el = $('[name="'+ x +'"]');
+		if (el.length > 1) {
+			// radio
+			$('input:radio[value="'+ App.prefs[x] +'"]').attr('checked', true);
+		} else if (el.attr('type') == 'checkbox') {
+			// checkbox
+			el.attr('checked',App.prefs[x]);
+		} else {
+			// select or regular input
+			el.val(App.prefs[x]);
+		}
+	}
+};
 
 // get or set prefs
 App.preferences = function() {
@@ -132,23 +156,24 @@ App.preferences = function() {
 		App.dbConnect();
 		App.prefs = arguments[0];
 		console.log(App.prefs)
+
 		for (x in App.prefs) {
 			App.db.execute('UPDATE prefs SET value="'+ App.prefs[x] +'" WHERE `key`="'+ x +'";');
 		}
+
+		App.dbDisconnect
 		App.timers();
 		
-	} else if (!App.prefs) {
-
 	}
-	
-}
+	return App.prefs;	
+};
 
 // throw a notification
 App.notify = function(title, message) {
 	var notice = Ti.Notification.createNotification();
 	notice.setTitle(title);
 	notice.setMessage(message);
-	notice.setTimeout(1000);
+	notice.setTimeout(App.prefs['notify-time']);
 	notice.show();
 };
 
@@ -181,6 +206,8 @@ App.getRealms = function() {
 };
 
 App.prepareUI = function() {
+	App.initWindow();
+
 	$('select[name="check-up"], select[name="check-down"]').each(function() {
 		for (x in TimeRange) {
 			$(this).append($('<option></option>')
@@ -188,15 +215,13 @@ App.prepareUI = function() {
 				.text(TimeRange[x] + ' seconds')); 
 		}
 	});
-	
-}
+};
 
-$(document).ready(function() {
-	App.initWindow();
+$(document).ready(function() {	
 	App.prepareUI();
 	App.prepareDb();
 	App.getRealms();
-	//App.notify('title','message');
-	
+	App.loadPrefs();
+
 	$('select, input').change(App.readPrefs);
 });

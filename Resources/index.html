@@ -20,12 +20,24 @@
 				<td>If my server is down, check every</td>
 				<td><select name="check-down"></select></td>
 			<tr>
-				<td>If my server goes down:</td>
+				<td>When my server goes down:</td>
 				<td>
-					<input type="radio" name="notify-action" value="nothing">Do nothing</input><br />
-					<input type="radio" name="notify-action" value="notify">Notify me</input><br />
-					<input type="radio" name="notify-action" value="launch">Launch WoW</input>
+					<input type="radio" name="notify-down-action" value="nothing" id="notify-down-action-nothing"><label for="notify-down-action-nothing">Do nothing</label><br />
+					<input type="radio" name="notify-down-action" value="notify" id="notify-down-action-notify"><label for="notify-down-action-notify">Notify me</label><br />
+					<input type="radio" name="notify-down-action" value="launch" id="notify-down-action-launch"><label for="notify-down-action-launch">Launch WoW</label>
 				</td>
+			</tr>
+			<tr>
+				<td>When my server comes back up:</td>
+				<td>
+					<input type="radio" name="notify-up-action" value="nothing" id="notify-up-action-nothing"><label for="notify-up-action-nothing">Do nothing</label><br />
+					<input type="radio" name="notify-up-action" value="notify" id="notify-up-action-notify"><label for="notify-up-action-notify">Notify me</label><br />
+					<input type="radio" name="notify-up-action" value="launch" id="notify-up-action-launch"><label for="notify-up-action-launch">Launch WoW</label>
+				</td>
+			</tr>
+			<tr>
+				<td>Path to WoW</td>
+				<td><input type="text" name="wow-path"></td>
 			</tr>
 			<tr><td colspan="2">
 				<input type="checkbox" id="startup-load" name="startup-load"><label for="startup-load">Launch wow stat when your computer starts</label>
