@@ -10,7 +10,7 @@ var Ti = Titanium;
 var App = {
 	mainWindow: Ti.UI.getMainWindow(),
 	prefs: [],
-	serverStatus: true
+	serverStatus: null
 };
 var MainWindowParams = {
 	width: 400,
@@ -91,11 +91,34 @@ App.timers = function() {
 App.check = function() {
 	if (!App.prefs['server']) return;
 	App.request('http://us.battle.net/api/wow/realm/status?realm=' + App.prefs['server'],function(json) {
-		var status = json.realms;
+		var status = json.realms[0];
+		var color = 'blue';
 		
-		if (App.serverStatus != status.status) {
-			App.notifyAction(status.status);	
+		if (App.serverStatus !== null && App.serverStatus != status.status) {
+			App.notifyAction(status.status);
 		}
+		console.log(status);
+		if (!status.status) {
+			color = 'red'; 
+		} else {
+			switch (status.population) {
+				case 'high':
+					color = 'orange';
+					break;
+				case 'medium':
+					color = 'yellow';
+					break;
+				case 'low':
+				default:
+					color = 'green';
+					break;
+			}
+		}
+		
+		$('body').css('background-image','url(/img/bg-' + color + '.png)');
+		App.tray.setIcon('/img/dock-icon-' + color + '.png');
+		Ti.UI.setDockIcon('/img/icon-' + color + '.png');
+		
 		App.serverStatus = status.status;
 	});
 };
@@ -150,7 +173,7 @@ App.loadPrefs = function() {
 	}
 };
 
-// get or set prefs
+// update prefs
 App.preferences = function() {
 	if (arguments[0]) {
 		// save prefs
@@ -164,7 +187,6 @@ App.preferences = function() {
 
 		App.dbDisconnect();
 		App.timers();
-		
 	}
 	return App.prefs;	
 };
@@ -174,7 +196,7 @@ App.notify = function(title, message) {
 	var notice = Ti.Notification.createNotification();
 	notice.setTitle(title);
 	notice.setMessage(message);
-	notice.setTimeout(App.prefs['notify-time']);
+	notice.setTimeout(5000); //App.prefs['notify-time']
 	notice.show();
 };
 
@@ -213,7 +235,27 @@ App.trayClick = function() {
 
 // prepare the ui for viewing
 App.prepareUI = function() {
-	Ti.UI.addTray('/img/dock-icon-blue.png',App.trayClick);
+	App.initWindow();
+
+	App.tray = Ti.UI.addTray('/img/dock-icon-blue.png',App.trayClick);
+	App.tray.setHint('WoW Stat');
+	var trayMenu = Ti.UI.createMenu();
+	App.tray.setMenu(trayMenu);
+	var hide = Ti.UI.createMenuItem("Hide", function(){
+		App.mainWindow.hide();
+	});
+	var show = Ti.UI.createMenuItem("Show", function(){
+		App.mainWindow.show();
+	});
+	var quit = Ti.UI.createMenuItem("Quit", function(){
+		Ti.App.exit();
+	});
+	trayMenu.appendItem(hide);
+	trayMenu.appendItem(show);
+	trayMenu.appendItem(quit);
+	
+	
+	
 	//var menu = Ti.UI.createMenu();
 	//mainMenu.appendItem(Ti.UI.createMenuItem("HAI"));
 	//menu.addItem("File", function(e) {
@@ -221,7 +263,7 @@ App.prepareUI = function() {
 	//});
 	//Titanium.UI.setMenu(menu);
 	
-	App.initWindow();
+	
 
 	$('select[name="check-up"], select[name="check-down"]').each(function() {
 		for (x in TimeRange) {
@@ -244,7 +286,7 @@ App.main = function() {
 	App.getRealms();
 	App.loadPrefs();
 	App.check();
-	App.timers();
+	//App.timers();
 
 	// add event handlers to dom
 	$('select, input').change(App.readPrefs);
