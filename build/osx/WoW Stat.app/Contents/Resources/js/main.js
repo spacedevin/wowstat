@@ -301,7 +301,6 @@ App.prepareUI = function() {
 
 	App.prepareTray();
 
-console.log(Ti.UI.getMenu());
 	var menu = Ti.UI.createMenu();
 	var file = Ti.UI.createMenuItem("File");
 	var view = Ti.UI.createMenuItem("View");
