@@ -12,14 +12,6 @@ var App = {
 	prefs: [],
 	serverStatus: null
 };
-/*
-var MainWindowParams = {
-	width: 400,
-	height: 590,
-	resizable: false,
-	maximizable: false
-};
-*/
 var Defaults = {
 	server: null,
 	'notify-time': 5*1000*60,
@@ -28,7 +20,7 @@ var Defaults = {
 	'notify-up-action': 'notify',
 	'notify-down-action': 'notify',
 	'startup-load': true,
-	'startup-check': false,
+	'sssstartup-check': false,
 	'startup-show-window': true,
 	serial: null,
 	'wow-path': Titanium.platform == 'win32' ? 'C:\\Program Files\\World of Warcraft\\WoW.exe' : '/Applications/World of Warcraft/WoW.app'
@@ -65,8 +57,8 @@ App.prepareDb = function() {
 		}
 		
 		for (x in Defaults) {
-			if (!App.prefs[x]) {
-				//App.db.execute('INSERT INTO ' + TableName + ' (`key`,value) VALUES("'+ x +'","' + Defaults[x] + '");');
+			if (typeof App.prefs[x] === 'undefined') {
+				App.db.execute('INSERT INTO ' + TableName + ' (`key`,value) VALUES("'+ x +'","' + Defaults[x] + '");');
 			}
 		}
 	} else {
@@ -294,14 +286,13 @@ App.prepareTray = function() {
 
 // prepare the ui for viewing
 App.prepareUI = function() {
-	//App.initWindow();
+
 	if (App.prefs['startup-show-window']) {
 		App.mainWindow.show();
 	}
 
 	App.prepareTray();
 
-console.log(Ti.UI.getMenu());
 	var menu = Ti.UI.createMenu();
 	var file = Ti.UI.createMenuItem("File");
 	var view = Ti.UI.createMenuItem("View");
