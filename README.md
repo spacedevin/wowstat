@@ -8,7 +8,7 @@ WoW Stat is a World of Warcraft server monitor utility. It is very simple and ea
 
 **This is still very much in development!**
 
-This is a port of my C# app from 2008. I will be distributing this for OSX, Windows, and Linux.
+This is a port of my C# app from 2007. I will be distributing this for OSX, Windows, and Linux.
 
 ### License 
 BSD. Enjoy.
