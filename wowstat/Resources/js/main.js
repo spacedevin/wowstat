@@ -14,7 +14,8 @@ var App = {
 };
 var Defaults = {
 	server: null,
-	'notify-time': 5*1000*60,
+	'notify-time-up': 15*60,
+	'notify-time-down': 5,
 	'check-up': 5*1000*60,
 	'check-down': .5*1000*60,
 	'notify-up-action': 'notify',
@@ -149,10 +150,36 @@ App.check = function() {
 App.notifyAction = function(status) {
 	var realm = App.realm(App.prefs['server']);
 	if (status) {
-		App.notify(realm.name + ' is up!', realm.name + ' is back up! Click here to launch WoW.',App.launch);
+		App.notify({
+			title: realm.name + ' is up!',
+			message: realm.name + ' is back up! Click here to launch WoW.',
+			timeout: App.prefs['notify-time-up'],
+			color: 'green',
+			callback: App.launch
+		});
 	} else {
-		App.notify(realm.name + ' is down!', realm.name + ' has gone down. You will be notified again when it is back up.');
+		App.notify({
+			title: realm.name + ' is down!',
+			message: realm.name + ' has gone down. You will be notified again when it is back up.',
+			timeout: App.prefs['notify-time-down'],
+			color: 'red'
+		});
 	}
+};
+
+// throw a notification
+App.notify = function(params) {
+	var notice = Ti.Notification.createNotification(window);
+	notice.setTitle(params.title);
+	notice.setMessage(params.message);
+	notice.setTimeout(params.timeout || 5); // @bug this doesnt seem to be working on osx. always defaults to 5 seconds
+	if (params.callback) {
+		notice.setCallback(params.callback);
+	}
+	if (params.color) {
+		notice.setIcon('/img/icon-' + params.color + '.png');
+	}
+	notice.show();
 };
 
 // get the realms info. only needed when a status changes
@@ -218,18 +245,6 @@ App.preferences = function() {
 		App.timers();
 	}
 	return App.prefs;	
-};
-
-// throw a notification
-App.notify = function(title, message, callback) {
-	var notice = Ti.Notification.createNotification();
-	notice.setTitle(title);
-	notice.setMessage(message);
-	notice.setTimeout(App.prefs['notify-time']);
-	if (callback) {
-		//notice.setCallback(callback);
-	}
-	notice.show();
 };
 
 // request a remote uri
