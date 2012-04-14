@@ -299,12 +299,23 @@ App.prepareUI = function() {
 
 	App.prepareTray();
 
+console.log(Ti.UI.getMenu());
 	var menu = Ti.UI.createMenu();
-	var file = Ti.UI.createMenuItem("User");
+	var file = Ti.UI.createMenuItem("File");
+	var view = Ti.UI.createMenuItem("View");
+	
 	menu.appendItem(file);
+	menu.appendItem(view);
 	file.addItem("Clear Preferences", function(e) {
 	    App.clearDb()
 		App.loadPrefs();
+	});
+	file.addItem("Check", function(e) {
+	    App.clearDb()
+		App.loadPrefs();
+	});
+	view.addItem("Source", function(e) {
+	    
 	});
 	Ti.UI.setMenu(menu);
 
