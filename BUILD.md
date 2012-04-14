@@ -35,7 +35,10 @@ For each OS you will need different tools, but all OS's have a makefile configur
 #### Steps
 
 1. You will want to create a link or bat file for your make instalation in **C:\Windows\System32**. It would look something like this.
-	<br>`"C:\Program Files (x86)\GnuWin32\bin\make.exe" %1 %2 %3 %4`
+	
+	```shell
+	"C:\Program Files (x86)\GnuWin32\bin\make.exe" %1 %2 %3 %4
+	```
 
 2. Open command and dir to your wowstat directory
 3. Type
