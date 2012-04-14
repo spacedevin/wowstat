@@ -10,13 +10,19 @@
 }
 
 body {
-	background: #474747 url(/img/bg-blue.png) no-repeat;
-	background-position: 270px 380px;
+	background: #474747 url(/img/bg.jpg);
+	background-position: 0px -300px;
 	color: #eee;
 	font: 12px "Lucida Grande", Helvetica, Arial, Verdana, sans-serif;
-	margin: 10px;
 	text-shadow: 2px 1px 1px rgba(0, 0, 0, 0.35);
 	overflow: hidden;
+}
+
+.wrapper {
+	background: url(/img/bg-blue.png) no-repeat;
+	background-position: 270px 380px;
+	padding: 10px;
+	height: 100%;
 }
 
 td {
@@ -60,6 +66,7 @@ h1 {
 	font: 18px Amaranth, Helvetica, sans-serif;
 	font-weight: bold;
 	line-height: 1.4em;
+	color: #67aaf7;
 }
 
 button {

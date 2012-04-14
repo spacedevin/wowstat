@@ -145,7 +145,7 @@ App.check = function() {
 			}
 		}
 		
-		$('body').css('background-image','url(/img/bg-' + color + '.png)');
+		$('.wrapper').css('background-image','url(/img/bg-' + color + '.png)');
 		App.tray.setIcon('/img/tray-icon-' + color + '.png');
 		Ti.UI.setDockIcon('/img/icon-' + color + '.png');
 		
@@ -157,9 +157,9 @@ App.check = function() {
 App.notifyAction = function(status) {
 	var realm = App.realm(App.prefs['server']);
 	if (status) {
-		App.notify(realm.name + ' is up! :)', realm.name + ' is back up! Click here to launch WoW.');
+		App.notify(realm.name + ' is up!', realm.name + ' is back up! Click here to launch WoW.',App.launch);
 	} else {
-		App.notify(realm.name + ' is down! :(', realm.name + ' has gone down. You will be notified again when it is back up.');
+		App.notify(realm.name + ' is down!', realm.name + ' has gone down. You will be notified again when it is back up.');
 	}
 };
 
@@ -229,12 +229,14 @@ App.preferences = function() {
 };
 
 // throw a notification
-App.notify = function(title, message) {
+App.notify = function(title, message, callback) {
 	var notice = Ti.Notification.createNotification();
 	notice.setTitle(title);
 	notice.setMessage(message);
 	notice.setTimeout(App.prefs['notify-time']);
-	notice.setCallback(App.launch);
+	if (callback) {
+		//notice.setCallback(callback);
+	}
 	notice.show();
 };
 

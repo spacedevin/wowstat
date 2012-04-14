@@ -22,5 +22,6 @@ if [ "APP_ID" == "" ] || [ "APP_NAME" == "" ]; then
 	exit 1
 fi
 
-bash -c "${TI_BUILD} -n -d ${PROJECT_ROOT}/build/osx/ -p ./ ${PROJECT_ROOT}/${PROJECT_NAME}/"
+bash -c "${TI_BUILD} -n -d ${PROJECT_ROOT}/build/osx/  ${PROJECT_ROOT}/${PROJECT_NAME}/"
 #  ${TI_SDK_VERSION} ${APP_ID} ${APP_NAME} ${APP_DEVICE}
+#-p ./
