@@ -297,10 +297,9 @@ App.request = function(url, complete) {
 // change the server
 App.changeServer = function(e) {
 	var server = e.getTarget().server;
-
 	$('select[name="server"]').val(server.slug);
 	App.readPrefs();
-}
+};
 
 // get the realms and add them to the realm list
 App.getRealms = function() {
@@ -319,7 +318,6 @@ App.getRealms = function() {
 			var color = App.getColor(App.realms[x]);
 
 			var i = Ti.UI.createMenuItem(App.realms[x].name, App.changeServer);
-			console.log(i);
 			i.server = App.realms[x];
 			i.setIcon('/img/tray-status-icon-'+ color.color +'-'+ App.platform +'.png');
 			trayServersMenu.appendItem(i);

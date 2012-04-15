@@ -20,7 +20,7 @@
         <width>468</width>
         <max-width>3000</max-width>
         <min-width>0</min-width>
-        <height>650</height>
+        <height>653</height>
         <max-height>3000</max-height>
         <min-height>0</min-height>
         <fullscreen>false</fullscreen>
@@ -29,6 +29,6 @@
         <maximizable>false</maximizable>
         <minimizable>true</minimizable>
         <closeable>true</closeable>
-        <visible>true</visible>
+        <visible>false</visible>
     </window>
 </ti:app>

@@ -24,8 +24,8 @@ var Defaults = {
 	'startup-check': false,
 	'startup-show-window': true,
 	serial: null,
-	'wow-path': Titanium.platform == 'win32' ? 'C:\\Program Files\\World of Warcraft\\WoW.exe' : '/Applications/World of Warcraft/WoW.app'
-}
+	'wow-path': Ti.platform == 'win32' ? 'C:\\Program Files\\World of Warcraft\\WoW.exe' : '/Applications/World of Warcraft/WoW.app'
+};
 var TimeRange = [.25,.5,1,1.5,2,3,4,5,6,7,8,9,10,15,20,30,60];
 var NotifyRange = [5,15,30,45,60,60*2,60*5,60*15,60*30,60*60];
 var TableName = 'prefs';
@@ -46,7 +46,7 @@ App.clearDb = function() {
 	App.prefs['server'] = App.realms[0];
 	App.prepareDb();
 	App.loadPrefs();
-}
+};
 
 // prepare the db for connectivity
 App.prepareDb = function() {
@@ -107,18 +107,15 @@ App.timers = function() {
 	App.timer = setInterval(App.check, App.prefs[App.serverStatus ? 'check-up' : 'check-down']);
 };
 
-// triggered after a check
-App.checkComplete = function(json) {
-	var status = json.realms ? json.realms[0] : json,
+// get a color by realm status
+App.getColor = function(status) {
+	var label = status.name,
 		color = 'blue';
-	
-	if (App.serverStatus !== null && App.serverStatus != status.status) {
-		App.notifyAction(status.status);
-	}
-
 	if (!status.status) {
-		color = 'red'; 
+		color = 'red';
+		label += ' is down!';
 	} else {
+		label += ' is up with ' + status.population + ' pop';
 		switch (status.population) {
 			case 'high':
 				color = 'orange';
@@ -132,13 +129,29 @@ App.checkComplete = function(json) {
 				break;
 		}
 	}
+	return {color: color, label: label};
+}
+
+// triggered after a check
+App.checkComplete = function(json) {
+	var status = json.realms ? json.realms[0] : json,
+		color,
+		label;
+	
+	if (App.serverStatus !== null && App.serverStatus != status.status) {
+		App.notifyAction(status.status);
+	}
+	var byStatus = App.getColor(status);
+	color = byStatus.color;
+	label = byStatus.label; 
 	
 	$('.wrapper').css('background-image','url(/img/bg-' + color + '.png)');
-	App.tray.setIcon('/img/tray-icon-' + color + '.png');
+	App.tray.setIcon('/img/tray-icon-' + color + '-'+ App.platform +'.png');
 	Ti.UI.setDockIcon('/img/icon-' + color + '.png');
+	App.trayStatus.setLabel(label);
 	
 	App.serverStatus = status.status;
-}
+};
 
 // check to see if the server is up
 App.check = function() {
@@ -215,7 +228,6 @@ App.readPrefs = function() {
 
 // load the prefs to the form
 App.loadPrefs = function() {
-	console.log(App.prefs);
 	for (x in App.prefs) {
 		var el = $('[name="'+ x +'"]');
 		if (el.length > 1) {
@@ -272,7 +284,7 @@ App.sterilizePref = function(pref) {
 	else if (pref == "null") pref = null;
 	else if (pref == parseInt(pref)) pref = parseInt(pref);
 	return pref;
-}
+};
 
 // request a remote uri
 App.request = function(url, complete) {
@@ -282,15 +294,33 @@ App.request = function(url, complete) {
 	complete($.parseJSON(client.responseText),client.responseText);
 };
 
+// change the server
+App.changeServer = function(e) {
+	var server = e.getTarget().server;
+	$('select[name="server"]').val(server.slug);
+	App.readPrefs();
+};
+
 // get the realms and add them to the realm list
 App.getRealms = function() {
 	App.request('http://us.battle.net/api/wow/realm/status',function(json) {
 		App.realms = json.realms;
 		$('select[name="server"] option').remove();
-		for (x in App.realms) {
+		
+		var trayServersMenu = Ti.UI.createMenu();
+		App.trayServers.setSubmenu(trayServersMenu);
+
+		for (var x in App.realms) {
 			$('select[name="server"]').append($('<option></option>')
 				.attr('value',App.realms[x].slug)
-				.text(App.realms[x].name)); 
+				.text(App.realms[x].name));
+
+			var color = App.getColor(App.realms[x]);
+
+			var i = Ti.UI.createMenuItem(App.realms[x].name, App.changeServer);
+			i.server = App.realms[x];
+			i.setIcon('/img/tray-status-icon-'+ color.color +'-'+ App.platform +'.png');
+			trayServersMenu.appendItem(i);
 		}
 		if (!App.prefs.server) {
 			App.prefs.server = App.realms[0];
@@ -307,16 +337,32 @@ App.launch = function() {
 // prepare the main window height
 App.prepareChrome = function() {
 	if (Titanium.platform == 'win32') {
-		App.mainWindow.height = App.mainWindow.height + 80;
+		App.mainWindow.height = App.mainWindow.height + 40;
 	} 
 };
 
 // prepare the tray menu
 App.prepareTray = function() {
-	App.tray = Ti.UI.addTray('/img/tray-icon-blue.png');
+	App.tray = Ti.UI.addTray('/img/tray-icon-blue-'+ App.platform +'.png');
 	App.tray.setHint('WoW Stat');
 	var trayMenu = Ti.UI.createMenu();
 	App.tray.setMenu(trayMenu);
+	
+	trayMenu.appendItem(Ti.UI.createMenuItem("WoW Stat",function() {
+		App.mainWindow.show();
+		App.mainWindow.unminimize();
+	}));
+	trayMenu.addSeparatorItem();
+
+	App.trayStatus = Ti.UI.createMenuItem("Server Status Unavailable");
+	trayMenu.appendItem(App.trayStatus);
+	
+	
+	App.trayServers = Ti.UI.createMenuItem("Change Servers");
+	trayMenu.appendItem(App.trayServers);
+	
+
+	
 	
 	trayMenu.appendItem(Ti.UI.createMenuItem("Recheck Server", function(){
 		App.check();
@@ -325,26 +371,28 @@ App.prepareTray = function() {
 		App.launch();
 	}));
 	trayMenu.addSeparatorItem();
-	trayMenu.appendItem(Ti.UI.createMenuItem("Hide WoW Stat", function(){
+	trayMenu.appendItem(Ti.UI.createMenuItem("Hide", function(){
 		App.mainWindow.hide();
 	}));
-	trayMenu.appendItem(Ti.UI.createMenuItem("Show WoW Stat", function(){
+	trayMenu.appendItem(Ti.UI.createMenuItem("Show", function(){
 		App.mainWindow.show();
 	}));
-	trayMenu.appendItem(Ti.UI.createMenuItem("Quit WoW Stat", function(){
+	trayMenu.appendItem(Ti.UI.createMenuItem("Quit", function(){
 		Ti.App.exit();
 	}));
-}
+};
 
-// prepare the ui for viewing
-App.prepareUI = function() {
-	
-	App.prepareChrome();
-
+// show or hide the window
+App.prepareWindow = function() {
 	if (App.prefs['startup-show-window']) {
 		App.mainWindow.show();
 	}
+};
 
+// prepare the ui for viewing
+App.prepareUI = function() {
+	App.prepareChrome();
+	App.prepareWindow();
 	App.prepareTray();
 
 	var menu = Ti.UI.createMenu();
@@ -443,8 +491,24 @@ App.complete = function() {
 	$('#loading-overlay').hide();
 };
 
+// safe platform name
+App.setPlatform = function() {
+	switch (Ti.platform) {
+		case 'win32':
+		case 'win64':
+		case 'win':
+			App.platform = 'win';
+			break;
+		case 'osx':
+		default:
+			App.platform = 'osx';
+			break;
+	}
+};
+
 // initilize db, prefs, and ui
 App.main = function() {
+	App.setPlatform();
 	App.prepareDb();
 	App.prepareUI();
 	App.getRealms();
