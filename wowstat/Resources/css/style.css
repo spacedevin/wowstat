@@ -22,7 +22,7 @@
 }
 
 body, #loading-overlay {
-	background: #343434 url(/img/bg.jpg);
+	background: #343434 url(/img/bg.png);
 	background-position: 0px -300px;
 }
 body {
@@ -78,10 +78,10 @@ p {
 }
 
 h1 {
-	font: 23px ChunkFive, Helvetica, sans-serif;
+	font: 31px Bebas Neue, Helvetica, sans-serif;
 	font-weight: normal;
 	line-height: 1.4em;
-	color: #67aaf7;
+	color: #fff;
 }
 
 button {
@@ -112,4 +112,8 @@ button {
 	top: 0;
 	left: 0;
 	text-align: center;
+}
+
+.red {
+	color: #f26c4f;
 }
