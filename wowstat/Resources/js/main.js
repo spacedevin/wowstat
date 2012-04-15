@@ -109,12 +109,13 @@ App.timers = function() {
 
 // get a color by realm status
 App.getColor = function(status) {
-	var label, color;
+	var label = status.name,
+		color = 'blue';
 	if (!status.status) {
 		color = 'red';
 		label += ' is down!';
 	} else {
-		label += ' is up with a ' + status.population + ' population';
+		label += ' is up with ' + status.population + ' pop';
 		switch (status.population) {
 			case 'high':
 				color = 'orange';
@@ -134,8 +135,8 @@ App.getColor = function(status) {
 // triggered after a check
 App.checkComplete = function(json) {
 	var status = json.realms ? json.realms[0] : json,
-		color = 'blue',
-		label = status.name;
+		color,
+		label;
 	
 	if (App.serverStatus !== null && App.serverStatus != status.status) {
 		App.notifyAction(status.status);
@@ -294,8 +295,11 @@ App.request = function(url, complete) {
 };
 
 // change the server
-App.changeServer = function(server) {
-	
+App.changeServer = function(e) {
+	var server = e.getTarget().server;
+
+	$('select[name="server"]').val(server.slug);
+	App.readPrefs();
 }
 
 // get the realms and add them to the realm list
@@ -306,18 +310,17 @@ App.getRealms = function() {
 		
 		var trayServersMenu = Ti.UI.createMenu();
 		App.trayServers.setSubmenu(trayServersMenu);
-		
-		for (x in App.realms) {
+
+		for (var x in App.realms) {
 			$('select[name="server"]').append($('<option></option>')
 				.attr('value',App.realms[x].slug)
 				.text(App.realms[x].name));
-				
+
 			var color = App.getColor(App.realms[x]);
-			var realm = App.realms[x];
-			
-			var i = Ti.UI.createMenuItem(App.realms[x].name, function() {
-				App.changeServer(realm);
-			});
+
+			var i = Ti.UI.createMenuItem(App.realms[x].name, App.changeServer);
+			console.log(i);
+			i.server = App.realms[x];
 			i.setIcon('/img/tray-status-icon-'+ color.color +'-'+ App.platform +'.png');
 			trayServersMenu.appendItem(i);
 		}
