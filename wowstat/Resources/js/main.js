@@ -24,7 +24,7 @@ var Defaults = {
 	'startup-check': false,
 	'startup-show-window': true,
 	serial: null,
-	'wow-path': Titanium.platform == 'win32' ? 'C:\\Program Files\\World of Warcraft\\WoW.exe' : '/Applications/World of Warcraft/WoW.app'
+	'wow-path': Ti.platform == 'win32' ? 'C:\\Program Files\\World of Warcraft\\WoW.exe' : '/Applications/World of Warcraft/WoW.app'
 }
 var TimeRange = [.25,.5,1,1.5,2,3,4,5,6,7,8,9,10,15,20,30,60];
 var NotifyRange = [5,15,30,45,60,60*2,60*5,60*15,60*30,60*60];
@@ -110,15 +110,18 @@ App.timers = function() {
 // triggered after a check
 App.checkComplete = function(json) {
 	var status = json.realms ? json.realms[0] : json,
-		color = 'blue';
+		color = 'blue',
+		label = status.name;
 	
 	if (App.serverStatus !== null && App.serverStatus != status.status) {
 		App.notifyAction(status.status);
 	}
 
 	if (!status.status) {
-		color = 'red'; 
+		color = 'red';
+		label += ' is down!';
 	} else {
+		label += ' is up with a ' + status.population + ' population';
 		switch (status.population) {
 			case 'high':
 				color = 'orange';
@@ -134,8 +137,9 @@ App.checkComplete = function(json) {
 	}
 	
 	$('.wrapper').css('background-image','url(/img/bg-' + color + '.png)');
-	App.tray.setIcon('/img/tray-icon-' + color + '.png');
+	App.tray.setIcon('/img/tray-icon-' + color + '-'+ App.platform +'.png');
 	Ti.UI.setDockIcon('/img/icon-' + color + '.png');
+	App.trayStatus.setLabel(label);
 	
 	App.serverStatus = status.status;
 }
@@ -215,7 +219,6 @@ App.readPrefs = function() {
 
 // load the prefs to the form
 App.loadPrefs = function() {
-	console.log(App.prefs);
 	for (x in App.prefs) {
 		var el = $('[name="'+ x +'"]');
 		if (el.length > 1) {
@@ -307,17 +310,19 @@ App.launch = function() {
 // prepare the main window height
 App.prepareChrome = function() {
 	if (Titanium.platform == 'win32') {
-		App.mainWindow.height = App.mainWindow.height + 80;
+		App.mainWindow.height = App.mainWindow.height + 40;
 	} 
 };
 
 // prepare the tray menu
 App.prepareTray = function() {
-	App.tray = Ti.UI.addTray('/img/tray-icon-blue.png');
+	App.tray = Ti.UI.addTray('/img/tray-icon-blue-'+ App.platform +'.png');
 	App.tray.setHint('WoW Stat');
 	var trayMenu = Ti.UI.createMenu();
 	App.tray.setMenu(trayMenu);
-	
+
+	App.trayStatus = Ti.UI.createMenuItem("Server Status Unavailable");
+	trayMenu.appendItem(App.trayStatus);	
 	trayMenu.appendItem(Ti.UI.createMenuItem("Recheck Server", function(){
 		App.check();
 	}));
@@ -443,8 +448,24 @@ App.complete = function() {
 	$('#loading-overlay').hide();
 };
 
+// safe platform name
+App.setPlatform = function() {
+	switch (Ti.platform) {
+		case 'win32':
+		case 'win64':
+		case 'win':
+			App.platform = 'win';
+			break;
+		case 'osx':
+		default:
+			App.platform = 'osx';
+			break;
+	}
+};
+
 // initilize db, prefs, and ui
 App.main = function() {
+	App.setPlatform();
 	App.prepareDb();
 	App.prepareUI();
 	App.getRealms();

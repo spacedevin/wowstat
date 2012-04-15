@@ -1,3 +1,18 @@
+
+
+@font-face {
+    font-family: 'ChunkFive';
+    src: url('/font/Chunkfive-webfont.eot');
+    src: url('/font/Chunkfive-webfont.eot?#iefix') format('embedded-opentype'),
+         url('/font/Chunkfive-webfont.woff') format('woff'),
+         url('/font/Chunkfive-webfont.ttf') format('truetype'),
+         url('/font/Chunkfive-webfont.svg#ChunkFiveRegular') format('svg');
+    font-weight: normal;
+    font-style: normal;
+
+}
+
+
 :focus {
 	outline: none;
 }
@@ -13,6 +28,7 @@ body, #loading-overlay {
 body {
 	color: #eee;
 	font: 12px "Lucida Grande", Helvetica, Arial, Verdana, sans-serif;
+	line-height: 1.6em;
 	text-shadow: 2px 1px 1px rgba(0, 0, 0, 0.35);
 	overflow: hidden;
 }
@@ -62,8 +78,8 @@ p {
 }
 
 h1 {
-	font: 18px Amaranth, Helvetica, sans-serif;
-	font-weight: bold;
+	font: 23px ChunkFive, Helvetica, sans-serif;
+	font-weight: normal;
 	line-height: 1.4em;
 	color: #67aaf7;
 }
