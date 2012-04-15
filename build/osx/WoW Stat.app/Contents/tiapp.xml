@@ -4,7 +4,7 @@
     
     <id>la.devin.wowstat</id>
     <name>WoW Stat</name>
-    <version>1.0</version>
+    <version>2.0</version>
     <analytics>false</analytics>
     <publisher>Devin Smith</publisher>
     <url>http://wow-stat.net</url>
@@ -28,6 +28,6 @@
         <maximizable>false</maximizable>
         <minimizable>true</minimizable>
         <closeable>true</closeable>
-        <visible>false</visible>
+        <visible>true</visible>
     </window>
 </ti:app>

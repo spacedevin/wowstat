@@ -5,13 +5,12 @@
 ::selection {
 	background: transparent;
 }
-::-moz-selection {
-	background: transparent;
-}
 
-body {
-	background: #474747 url(/img/bg.jpg);
+body, #loading-overlay {
+	background: #343434 url(/img/bg.jpg);
 	background-position: 0px -300px;
+}
+body {
 	color: #eee;
 	font: 12px "Lucida Grande", Helvetica, Arial, Verdana, sans-serif;
 	text-shadow: 2px 1px 1px rgba(0, 0, 0, 0.35);
@@ -88,4 +87,13 @@ button {
 	width: 50px;
 	margin-right: 15px;
 	cursor: pointer;
+}
+
+#loading-overlay {
+	height: 100%;
+	width: 100%;
+	position: absolute;
+	top: 0;
+	left: 0;
+	text-align: center;
 }

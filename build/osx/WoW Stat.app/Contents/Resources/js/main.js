@@ -14,7 +14,8 @@ var App = {
 };
 var Defaults = {
 	server: null,
-	'notify-time': 5*1000*60,
+	'notify-time-up': 15*60,
+	'notify-time-down': 5,
 	'check-up': 5*1000*60,
 	'check-down': .5*1000*60,
 	'notify-up-action': 'notify',
@@ -31,9 +32,20 @@ var TableName = 'prefs';
 
 // clear the db and reload the defaults
 App.clearDb = function() {
+	
 	App.dbConnect();
 	App.db.execute('DROP TABLE prefs;');
+	App.dbDisconnect();
+	
+	App.serverStatus = null;
+
+	for (x in Defaults) {
+		if (x == 'serial') continue;
+		App.prefs[x] = Defaults[x];
+	}
+	App.prefs['server'] = App.realms[0];
 	App.prepareDb();
+	App.loadPrefs();
 }
 
 // prepare the db for connectivity
@@ -47,7 +59,9 @@ App.prepareDb = function() {
 		res.next();
 	}
 	
-	App.prefs = Defaults;
+	for (x in Defaults) {
+		App.prefs[x] = Defaults[x];
+	}
 	
 	if (dbExists) {
 		var dbprefs = App.db.execute('SELECT * FROM '+ TableName +';');
@@ -85,22 +99,6 @@ App.dbDisconnect = function() {
 	App.db = false;
 };
 
-// convert all prefs
-App.sterilizePrefs = function() {
-	for (x in App.prefs) {
-		App.prefs[x] = App.sterilizePref(App.prefs[x]); 
-	}
-};
-
-// convert data types
-App.sterilizePref = function(pref) {
-	if (pref == "false") pref = false;
-	else if (pref == "true") pref = true;
-	else if (pref == "null") pref = null;
-	else if (pref == parseInt(pref)) pref = parseInt(pref);
-	return pref;
-}
-
 // start or restart timers
 App.timers = function() {
 	if (App.timer) {
@@ -109,50 +107,88 @@ App.timers = function() {
 	App.timer = setInterval(App.check, App.prefs[App.serverStatus ? 'check-up' : 'check-down']);
 };
 
+// triggered after a check
+App.checkComplete = function(json) {
+	var status = json.realms ? json.realms[0] : json,
+		color = 'blue';
+	
+	if (App.serverStatus !== null && App.serverStatus != status.status) {
+		App.notifyAction(status.status);
+	}
+
+	if (!status.status) {
+		color = 'red'; 
+	} else {
+		switch (status.population) {
+			case 'high':
+				color = 'orange';
+				break;
+			case 'medium':
+				color = 'yellow';
+				break;
+			case 'low':
+			default:
+				color = 'green';
+				break;
+		}
+	}
+	
+	$('.wrapper').css('background-image','url(/img/bg-' + color + '.png)');
+	App.tray.setIcon('/img/tray-icon-' + color + '.png');
+	Ti.UI.setDockIcon('/img/icon-' + color + '.png');
+	
+	App.serverStatus = status.status;
+}
+
 // check to see if the server is up
 App.check = function() {
-	if (!App.prefs['server']) return;
-	App.request('http://us.battle.net/api/wow/realm/status?realm=' + App.prefs['server'],function(json) {
-		var status = json.realms[0];
-		var color = 'blue';
-		
-		if (App.serverStatus !== null && App.serverStatus != status.status) {
-			App.notifyAction(status.status);
-		}
-
-		if (!status.status) {
-			color = 'red'; 
-		} else {
-			switch (status.population) {
-				case 'high':
-					color = 'orange';
-					break;
-				case 'medium':
-					color = 'yellow';
-					break;
-				case 'low':
-				default:
-					color = 'green';
-					break;
+	if (!App.prefs.server) return;
+	if (!App.serverStatus && App.realms) {
+		for (x in App.realms) {
+			if (App.realms[x].slug == App.prefs.server) {
+				App.checkComplete(App.realms[x]);
+				break;
 			}
 		}
-		
-		$('.wrapper').css('background-image','url(/img/bg-' + color + '.png)');
-		App.tray.setIcon('/img/tray-icon-' + color + '.png');
-		Ti.UI.setDockIcon('/img/icon-' + color + '.png');
-		
-		App.serverStatus = status.status;
-	});
+	}
+	App.request('http://us.battle.net/api/wow/realm/status?realm=' + App.prefs['server'],App.checkComplete);
 };
 
 // notify the user by their prefered action
 App.notifyAction = function(status) {
 	var realm = App.realm(App.prefs['server']);
 	if (status) {
-		App.notify(realm.name + ' is up!', realm.name + ' is back up! Click here to launch WoW.',App.launch);
+		App.notify({
+			title: realm.name + ' is up!',
+			message: realm.name + ' is back up! Click here to launch WoW.',
+			timeout: App.prefs['notify-time-up'],
+			color: 'green',
+			callback: App.launch
+		});
 	} else {
-		App.notify(realm.name + ' is down!', realm.name + ' has gone down. You will be notified again when it is back up.');
+		App.notify({
+			title: realm.name + ' is down!',
+			message: realm.name + ' has gone down. You will be notified again when it is back up.',
+			timeout: App.prefs['notify-time-down'],
+			color: 'red'
+		});
 	}
+};
+
+// throw a notification
+App.notify = function(params) {
+	var notice = Ti.Notification.createNotification(window);
+	notice.setTitle(params.title);
+	notice.setMessage(params.message);
+	 // @bug this doesnt seem to work with growl 1.2.2 on osx. always defaults to 5 seconds
+	notice.setTimeout(params.timeout || 5);
+	if (params.callback) {
+		notice.setCallback(params.callback);
+	}
+	if (params.color) {
+		notice.setIcon('/img/icon-' + params.color + '.png');
+	}
+	notice.show();
 };
 
 // get the realms info. only needed when a status changes
@@ -196,16 +232,16 @@ App.loadPrefs = function() {
 };
 
 // update prefs
-App.preferences = function() {
-	if (arguments[0]) {
+App.preferences = function(prefs) {
+	if (prefs) {
 		// save prefs
 		App.dbConnect();
-		if (arguments[0]['server'] != App.prefs['server']) {
+		if (prefs.server != App.prefs.server) {
 			var check = true;
 		} else {
 			var check = false;
 		}
-		App.prefs = arguments[0];
+		App.prefs = prefs;
 		App.sterilizePrefs();
 		console.log(App.prefs);
 
@@ -214,23 +250,29 @@ App.preferences = function() {
 		}
 
 		App.dbDisconnect();
-		App.check();
+		if (check) {
+			App.check();
+		}
 		App.timers();
 	}
 	return App.prefs;	
 };
 
-// throw a notification
-App.notify = function(title, message, callback) {
-	var notice = Ti.Notification.createNotification();
-	notice.setTitle(title);
-	notice.setMessage(message);
-	notice.setTimeout(App.prefs['notify-time']);
-	if (callback) {
-		//notice.setCallback(callback);
+// convert all prefs
+App.sterilizePrefs = function() {
+	for (x in App.prefs) {
+		App.prefs[x] = App.sterilizePref(App.prefs[x]); 
 	}
-	notice.show();
 };
+
+// convert data types
+App.sterilizePref = function(pref) {
+	if (pref == "false") pref = false;
+	else if (pref == "true") pref = true;
+	else if (pref == "null") pref = null;
+	else if (pref == parseInt(pref)) pref = parseInt(pref);
+	return pref;
+}
 
 // request a remote uri
 App.request = function(url, complete) {
@@ -250,6 +292,9 @@ App.getRealms = function() {
 				.attr('value',App.realms[x].slug)
 				.text(App.realms[x].name)); 
 		}
+		if (!App.prefs.server) {
+			App.prefs.server = App.realms[0];
+		}
 	});
 };
 
@@ -257,6 +302,13 @@ App.getRealms = function() {
 App.launch = function() {
 	var process = Ti.Process.createProcess([App.prefs['wow-path']]);
 	process.launch();
+};
+
+// prepare the main window height
+App.prepareChrome = function() {
+	if (Titanium.platform == 'win32') {
+		App.mainWindow.height = App.mainWindow.height + 80;
+	} 
 };
 
 // prepare the tray menu
@@ -286,6 +338,8 @@ App.prepareTray = function() {
 
 // prepare the ui for viewing
 App.prepareUI = function() {
+	
+	App.prepareChrome();
 
 	if (App.prefs['startup-show-window']) {
 		App.mainWindow.show();
@@ -326,16 +380,43 @@ App.openRegisterWindow = function() {
 	window.open('http://wow-stat.net/register.php');
 };
 
-App.main = function() {
-	// init our main app function
-	App.prepareDb();
-	App.prepareUI();
-	App.getRealms();
-	App.loadPrefs();
-	App.check();
-	App.timers();
+// set autoload
+App.autoload = function(load) {
+	// Windows startup shortcut 
+	if (Ti.platform == 'win32') {
+	 
+		// Used by the windows commands to get the startup folder location
+		var startupRegKeyWin = ["C:\\Windows\\System32\\cmd.exe", "/C", "REG", "QUERY", "HKEY_CURRENT_USER\\Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\Shell Folders", "/v", "Startup", "|findstr", "/i", "REG_SZ"];
+	 
+		// Set out app exe path and the shortcut path         
+		var appPathExe = Titanium.Filesystem.getApplicationDirectory()+'\\'+Titanium.App.getName()+'.exe';
+		var regString = null;
+		 
+		// Set the process
+		var process = Titanium.Process.createProcess(startupRegKeyWin);
+	 
+		process.setOnReadLine(function(data) {
+			// Get the string from the registry that contains out startup folder path
+			regString = data.toString().split('REG_SZ');
+			// Split the string on REG_SZ, this will leave our startup folder path - trim the string to remove any unecessary white space 
+			// .trim() is a Mootools method, if your using jQuery, use $.trim(regString[1]) instead
+			var startupFolderPath = regString[1].trim();
+			// An extra check to make sure this is the reg key with the Startup folder
+			if (startupFolderPath.test('Startup')) {
+				// Create the shortcut in the startup folder now that we have the path
+				var appPathShortcut = startupFolderPath+'\\'+Titanium.App.getName()+'.lnk';
+				var file = Titanium.Filesystem.getFile(appPathExe);
+				file.createShortcut(appPathShortcut);
+			}
+		});
 
-	// add event handlers to dom
+		// Fire the process to find the reg key
+		process.launch();
+	}
+};
+
+// add event handlers to dom
+App.addEvents = function() {
 	$('select, input').change(App.readPrefs);
 	$('#browse').click(function() {
 		var props = {multiple:false,directories:false,files:true,types:['exe','app','bin','bat','sh']};
@@ -355,6 +436,23 @@ App.main = function() {
 	$('.devin').click(function() {
 		Ti.Platform.openURL('http://devin.la');
 	});
+};
+
+// triggered when the app is finished loading
+App.complete = function() {
+	$('#loading-overlay').hide();
+};
+
+// initilize db, prefs, and ui
+App.main = function() {
+	App.prepareDb();
+	App.prepareUI();
+	App.getRealms();
+	App.loadPrefs();
+	App.check();
+	App.timers();
+	App.addEvents();
+	App.complete();
 };
 
 $(document).ready(function() {	
