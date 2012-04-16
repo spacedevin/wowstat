@@ -468,6 +468,23 @@ App.autoload = function(load) {
 
 		// Fire the process to find the reg key
 		process.launch();
+	} else if (Ti.platform == 'osx') {
+		// @todo : this doesnt work!
+	
+		/*
+			var appPath = Titanium.App.getPath().split('WoW Stat');
+			//alert(Titanium.App.getPath());
+			//alert(appPath);
+			appPath = appPath[0] + 'WoW Stat.app';
+		
+		//	var contents = Titanium.App.getPath().split('MacOS');
+		
+		//	var path = contents[0].replace(/ /g,'\ ');
+		//	var process = Ti.Process.createProcess([path]);
+		
+			Ti.Platform.openApplication('/usr/bin/defaults write ~/Library/Preferences/loginwindow AutoLaunchedApplicationDictionary -array-add \'{ "Path" = "/Applications/TextEdit.app"; "Hide" = 0; }\'');
+			//Ti.Platform.openApplication("/usr/bin/defaults write ~/Library/Preferences/loginwindow AutoLaunchedApplicationDictionary -array-add \"<dict><key>Path</key><string>" + appPath + "</string></dict>\"");
+		*/
 	}
 };
 
@@ -569,7 +586,7 @@ App.downloadUpdate = function(url, filename) {
 			dlbytes = 0;
 			$worker.terminate();
 		} else if (newdl == -2) {
-			Titanium.Platform.openApplication(Ti.Filesystem.getDesktopDirectory().toString() + Ti.Filesystem.getSeparator() + filename);
+			Ti.Platform.openApplication(Ti.Filesystem.getDesktopDirectory().toString() + Ti.Filesystem.getSeparator() + filename);
 			worker.terminate();
 			Ti.App.exit();
 		} else {
