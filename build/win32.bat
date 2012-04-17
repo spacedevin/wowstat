@@ -1,14 +1,15 @@
-@echo off
-SET PROJECT_NAME="Example Project"
-SET PROJECT_ID="com.example.automatedbuild"
-
-SET APP_DEVICE="desktop"
-SET TI_SDK_VERSION="1.2.0.RC4"
-TI_DIR="/Library/Application\ Support/Titanium"
-TI_OSX_DIR="${TI_DIR}/sdk/osx/${TI_SDK_VERSION}"
-TI_BUILD="${TI_OSX_DIR}/tibuild.py"
 
 
-SET TITANIUM_SDK=C:\Users\All Users\Titanium\mobilesdk\win32\1.6.0
-SET ANDROID_SDK=C:\android-sdk-windows
-"%TITANIUM_SDK%\android\builder.py" "build" %PROJECT_NAME% "%ANDROID_SDK%" . %PROJECT_ID%
+
+SET PROJECT_NAME=WoW Stat
+SET PROJECT_ID=la.devin.wowstat
+SET APP_DEVICE=desktop
+SET TI_SDK_VERSION=1.2.0.RC4
+SET TI_DIR=C:\Users\mic.000\AppData\Roaming\Titanium\sdk\win32\1.2.0.RC4
+SET PROJECT_ROOT=%1
+SET PYTHON_PATH=C:\Users\mic.000\AppData\Local\Titanium Studio\plugins\com.appcelerator.titanium.python.win32_1.0.0.1313011725\python\python.exe
+
+REM Z:\arzynik\Development\osx\wowstat
+
+mkdir ..\build\win32
+"%PYTHON_PATH%" "%TI_DIR%\tibuild.py" -v -o win32 -a "%TI_DIR%" -d "..\build\win32" "%PROJECT_ROOT%"
