@@ -60,8 +60,6 @@ win32:
 	@${CURRENT_PATH}/build/win32.bat ${PROJECT_ROOT}
 	
 win32package:
-
-	@mkdir "${CURRENT_PATH}\dist\win32"
 	@"C:\Program Files (x86)\NSIS\Unicode\makensis.exe" "${CURRENT_PATH}/assets/windows-nsis-setup.nsi"
 
 run:

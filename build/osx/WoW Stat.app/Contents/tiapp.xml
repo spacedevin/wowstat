@@ -4,11 +4,11 @@
     
     <id>la.devin.wowstat</id>
     <name>WoW Stat</name>
-    <version>2.0.b01</version>
-    <analytics>false</analytics>
+    <version>2.0.b02</version>
+    <analytics>true</analytics>
     <publisher>Devin Smith</publisher>
     <url>http://wow-stat.net</url>
-    <description>WoW Stat is a World of Warcraft server monitor utility. It is very simple and easy to use. You set the server you wish to monitor, and it does the rest! If your server goes down it will automatically notify you when it is back up, and even relaunch WoW for you if you want.</description>
+    <description>WoW Stat is a World of Warcraft server monitor utility. All you have to do is set the server you wish to monitor. If your server goes down, WoW Stat will automatically notify you when it is back up, and even relaunch WoW for you.</description>
     <icon>img/icon-blue.png</icon>
     <copyright>2012 by arzynik</copyright>
     

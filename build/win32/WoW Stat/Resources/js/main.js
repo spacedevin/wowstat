@@ -116,7 +116,7 @@ App.timers = function() {
 	}
 	// check every day, but dont bring to front in case there playing wow
 	App.versionTimer = setInterval(function() {
-		App.versionCheck(false);
+		App.versionCheck(false, false);
 	}, 60*60*1000*24);
 };
 
@@ -381,7 +381,7 @@ App.prepareTray = function() {
 	}));
 	trayMenu.addSeparatorItem();
 	trayMenu.appendItem(Ti.UI.createMenuItem("Check for Updates", function(){
-		App.versionCheck(true);
+		App.versionCheck(true, true);
 	}));
 	trayMenu.appendItem(Ti.UI.createMenuItem("Hide", function(){
 		App.mainWindow.hide();
@@ -419,7 +419,7 @@ App.prepareUI = function() {
 		App.loadPrefs();
 	});
 	file.addItem("Check for Updates", function(e) {
-	    App.versionCheck(true);
+	    App.versionCheck(true, true);
 	});
 	
 	if (Ti.platform == 'win32') {
@@ -544,7 +544,7 @@ App.setPlatform = function() {
 };
 
 // check version from website
-App.versionCheck = function(front) {
+App.versionCheck = function(front, manual) {
 	App.request('http://wow-stat.net/version/' + Ti.platform,function(json) {
 		if (!json.version) {
 			alert('There was a problem checking the version. Try visiting http://wow-stat.net');
@@ -559,7 +559,9 @@ App.versionCheck = function(front) {
 					App.downloadUpdate(json['html_url'], json['filename']);
 				}
 			} else {
-				alert('Your are currently using the latest version: '+ Ti.App.version);
+				if (manual) {
+					alert('Your are currently using the latest version: '+ Ti.App.version);
+				}
 			}
 		}
 	});
@@ -623,7 +625,7 @@ App.main = function() {
 	App.complete();
 	if (App.prefs['automatic-check']) {
 		setTimeout(function() {
-			App.versionCheck(true);
+			App.versionCheck(true, false);
 		},500);
 	};
 };

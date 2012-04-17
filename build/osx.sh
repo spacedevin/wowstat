@@ -18,4 +18,4 @@ if [ "APP_ID" == "" ] || [ "APP_NAME" == "" ]; then
 	exit 1
 fi
 
-bash -c "${TI_BUILD} -n -d ${CURRENT_PATH}/build/osx/  ${PROJECT_ROOT}"
+bash -c "${TI_BUILD} -t bundle -n -d ${CURRENT_PATH}/build/osx/ ${PROJECT_ROOT}"

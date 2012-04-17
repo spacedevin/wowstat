@@ -7,4 +7,4 @@ SET PROJECT_ROOT=%1
 SET PYTHON_PATH=C:\Users\mic.000\AppData\Local\Titanium Studio\plugins\com.appcelerator.titanium.python.win32_1.0.0.1313011725\python\python.exe
 
 mkdir "%PROJECT_ROOT%\..\build\win32"
-"%PYTHON_PATH%" "%TI_DIR%\tibuild.py" -v -o win32 -a "%TI_DIR%" -d "%PROJECT_ROOT%\..\build\win32" "%PROJECT_ROOT%"
+"%PYTHON_PATH%" "%TI_DIR%\tibuild.py" -t bundle -v -o win32 -a "%TI_DIR%" -d "%PROJECT_ROOT%\..\build\win32" "%PROJECT_ROOT%"
