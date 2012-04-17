@@ -76,11 +76,11 @@ button {
 }
 
 .header {
-	margin-bottom: 18px;
+	margin: 5px 0 15px 0;
 }
 
 .footer {
-	margin-top: 40px;
+	margin-top: 20px;
 }
 
 .devin {

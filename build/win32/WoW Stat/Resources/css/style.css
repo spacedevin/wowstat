@@ -1,0 +1,112 @@
+
+:focus {
+	outline: none;
+}
+
+::selection {
+	background: transparent;
+}
+
+body, #loading-overlay {
+	background: #eee url(/img/bg.png);
+	background-position: 0px -300px;
+}
+body {
+	color: #111;
+	font: 12px "Lucida Grande", Helvetica, Arial, Verdana, sans-serif;
+	line-height: 1.6em;
+	text-shadow: 1px 1px 1px rgba(255, 255, 255, 0.95);
+	overflow: hidden;
+}
+
+.wrapper {
+	/* background: url(/img/bg-blue.png) no-repeat; */
+	background-position: 270px 380px;
+	padding: 10px;
+	height: 100%;
+}
+
+td {
+	padding: 2px;
+}
+
+label {
+	padding-left: 5px;
+}
+
+td:first-child {
+	width: 400px;
+}
+
+input, select, button {
+	font-size: 12px;
+}
+
+input[type="text"] {
+	width: 280px;
+	padding: 3px;
+	background: rgba(0,0,0,.05);
+}
+
+#browse {
+	margin-left: 15px;
+	background: #fff;
+}
+
+#browse, input[type="text"] {
+	height: 23px;
+	border-radius: 3px;
+	border: 1px solid #111;
+}
+
+p {
+	text-align: justify;
+}
+
+h1 {
+	font: 31px Bebas Neue, Helvetica, sans-serif;
+	font-weight: normal;
+	line-height: 1.4em;
+	color: #000;
+}
+
+button {
+	padding: 3px;
+	margin-left: 0;
+}
+
+.header {
+	margin: 5px 0 15px 0;
+}
+
+.footer {
+	margin-top: 20px;
+}
+
+.devin {
+	float: left;
+	height: 50px;
+	width: 50px;
+	margin-right: 15px;
+	cursor: pointer;
+}
+
+#loading-overlay {
+	height: 100%;
+	width: 100%;
+	position: absolute;
+	top: 0;
+	left: 0;
+	text-align: center;
+}
+
+.red {
+	color: #f26c4f;
+}
+
+.server-status-icon {
+	float: right;
+	height: 18px;
+	width: 15px;
+	
+}

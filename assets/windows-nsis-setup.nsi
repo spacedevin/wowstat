@@ -13,7 +13,7 @@
 
 
 Name "WoW Stat ${VERSION}"
-OutFile "WoW Stat Setup.exe"
+OutFile "../dist/win32/WoW Stat Setup.exe"
 
 InstallDirRegKey HKCU "WoW Stat" ""
 InstallDir "$PROGRAMFILES\WoW Stat"
@@ -62,7 +62,7 @@ Section "WoW Stat" SecDefault
 
   SetOutPath $INSTDIR
 
-  File "../build/win/*"
+  File /r "..\build\win32\WoW Stat\*"
   WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\WoW Stat" "UninstallString" "$INSTDIR\uninstall.exe"
 
   CreateDirectory "$SMPROGRAMS\$STARTMENU_FOLDER"

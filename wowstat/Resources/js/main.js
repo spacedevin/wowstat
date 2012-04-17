@@ -333,7 +333,7 @@ App.getRealms = function() {
 
 			var i = Ti.UI.createMenuItem(App.realms[x].name, App.changeServer);
 			i.server = App.realms[x];
-			i.setIcon('/img/tray-status-icon-'+ color.color +'-'+ App.platform +'.png');
+			i.setIcon('/img/tray-status-icon-'+ color.color +'-osx.png');
 			trayServersMenu.appendItem(i);
 		}
 		if (!App.prefs.server) {
@@ -350,7 +350,7 @@ App.launch = function() {
 // prepare the main window height
 App.prepareChrome = function() {
 	if (Titanium.platform == 'win32') {
-		App.mainWindow.height = App.mainWindow.height + 40;
+		App.mainWindow.height = App.mainWindow.height + 55;
 	} 
 };
 
@@ -413,6 +413,7 @@ App.prepareUI = function() {
 	
 	menu.appendItem(file);
 	//menu.appendItem(view);
+
 	file.addItem("Clear Preferences", function(e) {
 	    App.clearDb()
 		App.loadPrefs();
@@ -420,6 +421,17 @@ App.prepareUI = function() {
 	file.addItem("Check for Updates", function(e) {
 	    App.versionCheck(true);
 	});
+	
+	if (Ti.platform == 'win32') {
+		file.addSeparatorItem();
+		file.addItem("Hide", function(e) {
+			App.mainWindow.hide();
+		});
+		file.addItem("Quit", function(e) {
+			Ti.App.exit();
+		});
+	}
+
 	Ti.UI.setMenu(menu);
 
 	$('select[name="check-up"], select[name="check-down"]').each(function() {

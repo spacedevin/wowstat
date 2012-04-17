@@ -13,7 +13,7 @@ var App = {
 	serverStatus: null
 };
 var Defaults = {
-	server: null,
+	'server': null,
 	'notify-time-up': 15*60,
 	'notify-time-down': 5,
 	'check-up': 5*1000*60,
@@ -21,14 +21,19 @@ var Defaults = {
 	'notify-up-action': 'notify',
 	'notify-down-action': 'notify',
 	'startup-load': true,
-	'startup-check': false,
+	'automatic-check': true,
 	'startup-show-window': true,
-	serial: null,
+	'serial': null,
 	'wow-path': Ti.platform == 'win32' ? 'C:\\Program Files\\World of Warcraft\\WoW.exe' : '/Applications/World of Warcraft/WoW.app'
 };
 var TimeRange = [.25,.5,1,1.5,2,3,4,5,6,7,8,9,10,15,20,30,60];
 var NotifyRange = [5,15,30,45,60,60*2,60*5,60*15,60*30,60*60];
 var TableName = 'prefs';
+
+// download units
+var BINARY_UNITS = [1024, 'Ki', 'Mi', 'Gi', 'Ti', 'Pi', 'Ei', 'Zi', 'Yo'];
+var SI_UNITS = [1000, 'k', 'M', 'G', 'T', 'P', 'E', 'Z', 'Y'];
+
 
 // clear the db and reload the defaults
 App.clearDb = function() {
@@ -105,6 +110,14 @@ App.timers = function() {
 		clearInterval(App.timer);
 	}
 	App.timer = setInterval(App.check, App.prefs[App.serverStatus ? 'check-up' : 'check-down']);
+	
+	if (App.versionTimer) {
+		clearInterval(App.versionTimer);
+	}
+	// check every day, but dont bring to front in case there playing wow
+	App.versionTimer = setInterval(function() {
+		App.versionCheck(false);
+	}, 60*60*1000*24);
 };
 
 // get a color by realm status
@@ -145,11 +158,12 @@ App.checkComplete = function(json) {
 	color = byStatus.color;
 	label = byStatus.label; 
 	
-	$('.wrapper').css('background-image','url(/img/bg-' + color + '.png)');
+	//$('.wrapper').css('background-image','url(/img/bg-' + color + '.png)');
 	App.tray.setIcon('/img/tray-icon-' + color + '-'+ App.platform +'.png');
 	Ti.UI.setDockIcon('/img/icon-' + color + '.png');
 	App.trayStatus.setLabel(label);
-	
+	$('.server-status-icon').css('background-image','url(/img/tray-status-icon-' + color + '-osx.png)');
+	console.log($('.server-status-icon'));
 	App.serverStatus = status.status;
 };
 
@@ -319,7 +333,7 @@ App.getRealms = function() {
 
 			var i = Ti.UI.createMenuItem(App.realms[x].name, App.changeServer);
 			i.server = App.realms[x];
-			i.setIcon('/img/tray-status-icon-'+ color.color +'-'+ App.platform +'.png');
+			i.setIcon('/img/tray-status-icon-'+ color.color +'-osx.png');
 			trayServersMenu.appendItem(i);
 		}
 		if (!App.prefs.server) {
@@ -330,8 +344,7 @@ App.getRealms = function() {
 
 // launch wow
 App.launch = function() {
-	var process = Ti.Process.createProcess([App.prefs['wow-path']]);
-	process.launch();
+	Titanium.Platform.openApplication(App.prefs['wow-path']);
 };
 
 // prepare the main window height
@@ -357,12 +370,8 @@ App.prepareTray = function() {
 	App.trayStatus = Ti.UI.createMenuItem("Server Status Unavailable");
 	trayMenu.appendItem(App.trayStatus);
 	
-	
 	App.trayServers = Ti.UI.createMenuItem("Change Servers");
 	trayMenu.appendItem(App.trayServers);
-	
-
-	
 	
 	trayMenu.appendItem(Ti.UI.createMenuItem("Recheck Server", function(){
 		App.check();
@@ -371,6 +380,9 @@ App.prepareTray = function() {
 		App.launch();
 	}));
 	trayMenu.addSeparatorItem();
+	trayMenu.appendItem(Ti.UI.createMenuItem("Check for Updates", function(){
+		App.versionCheck(true);
+	}));
 	trayMenu.appendItem(Ti.UI.createMenuItem("Hide", function(){
 		App.mainWindow.hide();
 	}));
@@ -397,21 +409,29 @@ App.prepareUI = function() {
 
 	var menu = Ti.UI.createMenu();
 	var file = Ti.UI.createMenuItem("File");
-	var view = Ti.UI.createMenuItem("View");
+	//var view = Ti.UI.createMenuItem("View");
 	
 	menu.appendItem(file);
-	menu.appendItem(view);
+	//menu.appendItem(view);
+
 	file.addItem("Clear Preferences", function(e) {
 	    App.clearDb()
 		App.loadPrefs();
 	});
-	file.addItem("Check", function(e) {
-	    App.clearDb()
-		App.loadPrefs();
+	file.addItem("Check for Updates", function(e) {
+	    App.versionCheck(true);
 	});
-	view.addItem("Source", function(e) {
-	    
-	});
+	
+	if (Ti.platform == 'win32') {
+		file.addSeparatorItem();
+		file.addItem("Hide", function(e) {
+			App.mainWindow.hide();
+		});
+		file.addItem("Quit", function(e) {
+			Ti.App.exit();
+		});
+	}
+
 	Ti.UI.setMenu(menu);
 
 	$('select[name="check-up"], select[name="check-down"]').each(function() {
@@ -460,6 +480,23 @@ App.autoload = function(load) {
 
 		// Fire the process to find the reg key
 		process.launch();
+	} else if (Ti.platform == 'osx') {
+		// @todo : this doesnt work!
+	
+		/*
+			var appPath = Titanium.App.getPath().split('WoW Stat');
+			//alert(Titanium.App.getPath());
+			//alert(appPath);
+			appPath = appPath[0] + 'WoW Stat.app';
+		
+		//	var contents = Titanium.App.getPath().split('MacOS');
+		
+		//	var path = contents[0].replace(/ /g,'\ ');
+		//	var process = Ti.Process.createProcess([path]);
+		
+			Ti.Platform.openApplication('/usr/bin/defaults write ~/Library/Preferences/loginwindow AutoLaunchedApplicationDictionary -array-add \'{ "Path" = "/Applications/TextEdit.app"; "Hide" = 0; }\'');
+			//Ti.Platform.openApplication("/usr/bin/defaults write ~/Library/Preferences/loginwindow AutoLaunchedApplicationDictionary -array-add \"<dict><key>Path</key><string>" + appPath + "</string></dict>\"");
+		*/
 	}
 };
 
@@ -506,6 +543,73 @@ App.setPlatform = function() {
 	}
 };
 
+// check version from website
+App.versionCheck = function(front) {
+	App.request('http://wow-stat.net/version/' + Ti.platform,function(json) {
+		if (!json.version) {
+			alert('There was a problem checking the version. Try visiting http://wow-stat.net');
+		} else {
+			var v = [json.version,Ti.App.version].sort().reverse();
+			if (Ti.App.version != v[0]) {
+				if (front) {
+					App.mainWindow.show();
+					App.mainWindow.unminimize();
+				}
+				if (confirm('There is a newer version available. Do you wish to download and install it now? WoW Stat will be closed if you click OK.')) {
+					App.downloadUpdate(json['html_url'], json['filename']);
+				}
+			} else {
+				alert('Your are currently using the latest version: '+ Ti.App.version);
+			}
+		}
+	});
+};
+
+// convert units
+App.unitify = function(n, units) {
+    for (var i = units.length; i-->1;) {
+        var unit = Math.pow(units[0], i);
+        if (n >= unit) {
+			var result = n / unit; 
+			return result.toFixed(2) + units[i];
+		}
+    }
+	return n;	
+};
+
+// update the app
+App.downloadUpdate = function(url, filename) {
+
+	var dlbytes = 0;
+	var worker = Ti.Worker.createWorker('/js/download.js');
+
+	worker.postMessage({
+		url: url,
+		filename: filename,
+		dir: Ti.Filesystem.getDesktopDirectory().toString() + Ti.Filesystem.getSeparator()
+	});
+ 
+	worker.onmessage = function(event) {
+		var newdl = parseInt(event.message);
+		if (newdl == 0) {
+			dlbytes = 0;
+		} else if (newdl == -1) {
+			alert('Download failed');
+			dlbytes = 0;
+			$worker.terminate();
+		} else if (newdl == -2) {
+			Ti.Platform.openApplication(Ti.Filesystem.getDesktopDirectory().toString() + Ti.Filesystem.getSeparator() + filename);
+			worker.terminate();
+			Ti.App.exit();
+		} else {
+			dlbytes += newdl;
+		}
+		$('#dlsize').innerText = App.unitify(dlbytes,BINARY_UNITS);
+	};
+
+	worker.start();
+};
+
 // initilize db, prefs, and ui
 App.main = function() {
 	App.setPlatform();
@@ -517,6 +621,11 @@ App.main = function() {
 	App.timers();
 	App.addEvents();
 	App.complete();
+	if (App.prefs['automatic-check']) {
+		setTimeout(function() {
+			App.versionCheck(true);
+		},500);
+	};
 };
 
 $(document).ready(function() {	

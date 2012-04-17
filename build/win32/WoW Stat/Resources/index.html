@@ -1,0 +1,81 @@
+<html>
+	<head>
+		<title>WoW Stat</title>
+		<link rel="stylesheet" href="css/reset.css" type="text/css">
+		<link rel="stylesheet" href="css/style.css" type="text/css"> 
+		<script src="js/jquery-1.7.2.min.js" type="text/javascript"></script>
+		<script src="js/main.js" type="text/javascript"></script>
+	</head>
+	<body>
+		<div class="wrapper">
+			<div class="header">
+				<img src="/img/server.png">
+			</div>
+			<div class="content">
+				<table>
+					<tr>
+						<td>Server:<div class="server-status-icon"></div></td>
+						<td><select name="server"></select></td>
+					</tr>
+					<tr>
+						<td>If my server is up, check every:</td>
+						<td><select name="check-up"></select></td>
+					</tr>
+					<tr>
+						<td>If my server is down, check every:</td>
+						<td><select name="check-down"></select></td>
+					</tr>
+					<tr>
+						<td>When my server comes back up:</td>
+						<td>
+							<input type="radio" name="notify-up-action" value="nothing" id="notify-up-action-nothing"><label for="notify-up-action-nothing">Do nothing</label><br />
+							<input type="radio" name="notify-up-action" value="notify" id="notify-up-action-notify"><label for="notify-up-action-notify">Notify me</label><br />
+							<input type="radio" name="notify-up-action" value="launch" id="notify-up-action-launch"><label for="notify-up-action-launch">Launch WoW</label>
+						</td>
+					</tr>
+					<tr>
+						<td>When my server goes down:</td>
+						<td>
+							<input type="radio" name="notify-down-action" value="nothing" id="notify-down-action-nothing"><label for="notify-down-action-nothing">Do nothing</label><br />
+							<input type="radio" name="notify-down-action" value="notify" id="notify-down-action-notify"><label for="notify-down-action-notify">Notify me</label><br />
+							<input type="radio" name="notify-down-action" value="launch" id="notify-down-action-launch"><label for="notify-down-action-launch">Launch WoW</label>
+						</td>
+					</tr>
+					<tr>
+						<td colspan="2">Path to WoW:</td>
+					</tr>
+					<tr>
+						<td colspan="2">
+							<input type="text" name="wow-path">
+							<button id="browse">Browse...</button>
+						</td>
+					</tr>
+					<tr><td><br /></td></tr>
+					<tr><td colspan="2">
+						<input type="checkbox" id="startup-load" name="startup-load"><label for="startup-load">Launch WoW Stat when your computer starts</label>
+					</td></tr>
+					<tr><td colspan="2">
+						<input type="checkbox" id="startup-show-window" name="startup-show-window"><label for="startup-show-window">Show this window when WoW Stat starts</label>
+					</td></tr>
+					<tr><td colspan="2">
+						<input type="checkbox" id="automatic-check" name="automatic-check"><label for="automatic-check">Automaticly check for updates</label>
+					</td></tr>
+				</table>
+				<br />
+				<p>
+					Registering is completly free. All it does for you is lets you know when there are major updates. All it does for me is lets me know people are actulay using this software. You do not have to register ever.
+				</p><br />
+				<button onclick="App.openRegisterWindow();">Register...</button>
+			</div>
+			<div class="footer">
+				<img src="http://graph.facebook.com/witgi/picture" class="devin">
+				<p>
+					Buying me something is the best way to say "Thanks!".<br />
+					(that or sending me an email!)
+				</p><br />
+				<button onclick="Ti.Platform.openURL('http://amzn.com/w/3TTBVAO8C50E')">Devin's Amazon Wishlist...</button>
+			</div>
+		</div>
+		<div id="loading-overlay"></div>
+	</body>
+</html>

@@ -1,18 +1,4 @@
 
-
-@font-face {
-    font-family: 'ChunkFive';
-    src: url('/font/Chunkfive-webfont.eot');
-    src: url('/font/Chunkfive-webfont.eot?#iefix') format('embedded-opentype'),
-         url('/font/Chunkfive-webfont.woff') format('woff'),
-         url('/font/Chunkfive-webfont.ttf') format('truetype'),
-         url('/font/Chunkfive-webfont.svg#ChunkFiveRegular') format('svg');
-    font-weight: normal;
-    font-style: normal;
-
-}
-
-
 :focus {
 	outline: none;
 }
@@ -22,19 +8,19 @@
 }
 
 body, #loading-overlay {
-	background: #343434 url(/img/bg.jpg);
+	background: #eee url(/img/bg.png);
 	background-position: 0px -300px;
 }
 body {
-	color: #eee;
+	color: #111;
 	font: 12px "Lucida Grande", Helvetica, Arial, Verdana, sans-serif;
 	line-height: 1.6em;
-	text-shadow: 2px 1px 1px rgba(0, 0, 0, 0.35);
+	text-shadow: 1px 1px 1px rgba(255, 255, 255, 0.95);
 	overflow: hidden;
 }
 
 .wrapper {
-	background: url(/img/bg-blue.png) no-repeat;
+	/* background: url(/img/bg-blue.png) no-repeat; */
 	background-position: 270px 380px;
 	padding: 10px;
 	height: 100%;
@@ -59,7 +45,7 @@ input, select, button {
 input[type="text"] {
 	width: 280px;
 	padding: 3px;
-	background: #ddd;
+	background: rgba(0,0,0,.05);
 }
 
 #browse {
@@ -78,10 +64,10 @@ p {
 }
 
 h1 {
-	font: 23px ChunkFive, Helvetica, sans-serif;
+	font: 31px Bebas Neue, Helvetica, sans-serif;
 	font-weight: normal;
 	line-height: 1.4em;
-	color: #67aaf7;
+	color: #000;
 }
 
 button {
@@ -90,11 +76,11 @@ button {
 }
 
 .header {
-	margin-bottom: 18px;
+	margin: 5px 0 15px 0;
 }
 
 .footer {
-	margin-top: 40px;
+	margin-top: 20px;
 }
 
 .devin {
@@ -112,4 +98,15 @@ button {
 	top: 0;
 	left: 0;
 	text-align: center;
+}
+
+.red {
+	color: #f26c4f;
+}
+
+.server-status-icon {
+	float: right;
+	height: 18px;
+	width: 15px;
+	
 }
