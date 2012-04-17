@@ -163,7 +163,7 @@ App.checkComplete = function(json) {
 	Ti.UI.setDockIcon('/img/icon-' + color + '.png');
 	App.trayStatus.setLabel(label);
 	$('.server-status-icon').css('background-image','url(/img/tray-status-icon-' + color + '-osx.png)');
-	console.log($('.server-status-icon'));
+
 	App.serverStatus = status.status;
 };
 
@@ -269,7 +269,6 @@ App.preferences = function(prefs) {
 		}
 		App.prefs = prefs;
 		App.sterilizePrefs();
-		console.log(App.prefs);
 
 		for (x in App.prefs) {
 			App.db.execute('UPDATE prefs SET value="'+ App.prefs[x] +'" WHERE `key`="'+ x +'";');
@@ -280,6 +279,8 @@ App.preferences = function(prefs) {
 			App.check();
 		}
 		App.timers();
+		
+		Ti.Analytics.settingsEvent('preferences', App.prefs);
 	}
 	return App.prefs;	
 };
@@ -555,7 +556,8 @@ App.versionCheck = function(front, manual) {
 					App.mainWindow.show();
 					App.mainWindow.unminimize();
 				}
-				if (confirm('There is a newer version available. Do you wish to download and install it now? WoW Stat will be closed if you click OK.')) {
+				console.log('Current: ' + Ti.App.version,'New: ' + json.version);
+				if (confirm('There is a newer version available ('+ json.version +'). Do you wish to download and install it now? WoW Stat will be closed if you click OK.')) {
 					App.downloadUpdate(json['html_url'], json['filename']);
 				}
 			} else {
