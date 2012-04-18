@@ -43,17 +43,27 @@ input, select, button {
 }
 
 input[type="text"] {
-	width: 280px;
 	padding: 3px;
 	background: rgba(0,0,0,.05);
 }
 
-#browse {
-	margin-left: 15px;
-	background: #fff;
+input[name="wow-path"] {
+	width: 280px;
+}
+input[name="email"] {
+	width: 280px;
+	margin-top: 15px;
 }
 
-#browse, input[type="text"] {
+.registration {
+	
+}
+
+#browse, #register {
+	margin-left: 15px;
+}
+
+input[type="text"] {
 	height: 23px;
 	border-radius: 3px;
 	border: 1px solid #111;
