@@ -1,7 +1,12 @@
 PROJECT_NAME="wowstat"
 APP_NAME="WoW Stat"
+TI_SDK_VERSION="1.2.0.RC4"
 
 UNAME := $(shell uname)
+
+
+
+
 
 # OSX
 ifeq ($(UNAME), Darwin)
@@ -56,8 +61,7 @@ all: win32 win32package
 package: win32package
 
 win32:
-	@copy /Y ${CURRENT_PATH}\components\tiapp-win32.xml ${PROJECT_ROOT}\tiapp.xml
-	@${CURRENT_PATH}/build/win32.bat ${PROJECT_ROOT}
+	@${CURRENT_PATH}/build/win32.bat "${CURRENT_PATH}" "${PROJECT_ROOT}" "${APP_NAME}" ${TI_SDK_VERSION}
 	
 win32package:
 	@"C:\Program Files (x86)\NSIS\Unicode\makensis.exe" "${CURRENT_PATH}/assets/windows-nsis-setup.nsi"
