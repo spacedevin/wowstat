@@ -3,13 +3,13 @@
   Var MUI_TEMP
 
 !ifndef VERSION
-  !define VERSION '2.0.b01'
+  !define VERSION '2.0.b03'
 !endif
 
 
 !define DOT_MAJOR "2"
 !define DOT_MINOR "0"
-!define DOT_MINOR_MINOR "b01"
+!define DOT_MINOR_MINOR "b03"
 
 
 Name "WoW Stat ${VERSION}"

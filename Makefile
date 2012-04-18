@@ -61,7 +61,7 @@ all: win32 win32package
 package: win32package
 
 win32:
-	@${CURRENT_PATH}/build/win32.bat "${CURRENT_PATH}" "${PROJECT_ROOT}" "${APP_NAME}" ${TI_SDK_VERSION}
+	@${CURRENT_PATH}/build/win32.bat "${CURRENT_PATH}" "${PROJECT_ROOT}" "${APP_NAME}" "${TI_SDK_VERSION}"
 	
 win32package:
 	@"C:\Program Files (x86)\NSIS\Unicode\makensis.exe" "${CURRENT_PATH}/assets/windows-nsis-setup.nsi"
