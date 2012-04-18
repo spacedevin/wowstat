@@ -41,11 +41,11 @@ App.clearDb = function() {
 	App.dbConnect();
 	App.db.execute('DROP TABLE prefs;');
 	App.dbDisconnect();
-	
+
 	App.serverStatus = null;
+	Defaults.serial = App.prefs.serial;
 
 	for (x in Defaults) {
-		if (x == 'serial') continue;
 		App.prefs[x] = Defaults[x];
 	}
 	App.prefs['server'] = App.realms[0];
@@ -407,6 +407,7 @@ App.prepareUI = function() {
 	App.prepareChrome();
 	App.prepareWindow();
 	App.prepareTray();
+	App.registered();
 
 	var menu = Ti.UI.createMenu();
 	var file = Ti.UI.createMenuItem("File");
@@ -416,7 +417,7 @@ App.prepareUI = function() {
 	//menu.appendItem(view);
 
 	file.addItem("Clear Preferences", function(e) {
-	    App.clearDb()
+	    App.clearDb();
 		App.loadPrefs();
 	});
 	file.addItem("Check for Updates", function(e) {
@@ -442,11 +443,6 @@ App.prepareUI = function() {
 				.text(TimeRange[x] + ' minutes')); 
 		}
 	});
-};
-
-// open the registration window
-App.openRegisterWindow = function() {
-	window.open('http://wow-stat.net/register.php');
 };
 
 // set autoload
@@ -521,6 +517,42 @@ App.addEvents = function() {
 
 	$('.devin').click(function() {
 		Ti.Platform.openURL('http://devin.la');
+	});
+	
+	$('#register').click(function() {
+		App.register($('input[name="email"]').val());
+	});
+	$('input[name="email"]').keydown(function(e) {
+		if (e.which == 13) {
+			$('#register').click();
+		}
+	});
+};
+
+// hides if already registered
+App.registered = function() {
+	if (App.prefs['serial']) {
+		$('.registration').hide();
+	}
+	if (App.prefs['serial']) {
+		App.mainWindow.height = App.mainWindow.height - 95;
+	}
+};
+
+// register
+App.register = function(email) {
+	if (!email) {
+		return;
+	}
+	App.request('http://wow-stat.net/register?email=' + Ti.platform,function(json) {
+		if (json.status && json.key) {
+			App.prefs['serial'] = json.key;
+			App.preferences(App.prefs);
+			App.registered();
+			alert('Thank you for registering!');
+		} else {
+			alert('Failed to register! Dont worry! You can always register later!');
+		}
 	});
 };
 
