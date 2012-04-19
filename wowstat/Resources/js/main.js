@@ -13,6 +13,7 @@ var App = {
 	serverStatus: null
 };
 var Defaults = {
+	'region': 'us',
 	'server': null,
 	'notify-time-up': 15*60,
 	'notify-time-down': 5,
@@ -178,7 +179,7 @@ App.check = function() {
 			}
 		}
 	}
-	App.request('http://us.battle.net/api/wow/realm/status?realm=' + App.prefs['server'],App.checkComplete);
+	App.request('http://'+ App.prefs['region'].toLowerCase() +'.battle.net/api/wow/realm/status?realm=' + App.prefs['server'],App.checkComplete);
 };
 
 // notify the user by their prefered action
@@ -267,8 +268,14 @@ App.preferences = function(prefs) {
 		} else {
 			var check = false;
 		}
+		var prefRegion = App.prefs.region;
 		App.prefs = prefs;
 		App.sterilizePrefs();
+		
+		if (prefs.region != prefRegion) {
+			App.getRealms();
+			App.prefs.server = App.realms[0].slug;
+		}
 
 		for (x in App.prefs) {
 			App.db.execute('UPDATE prefs SET value="'+ App.prefs[x] +'" WHERE `key`="'+ x +'";');
@@ -318,7 +325,9 @@ App.changeServer = function(e) {
 
 // get the realms and add them to the realm list
 App.getRealms = function() {
-	App.request('http://us.battle.net/api/wow/realm/status',function(json) {
+	var url = 'http://'+ App.prefs['region'].toLowerCase() +'.battle.net/api/wow/realm/status';
+	console.log(url);
+	App.request(url,function(json) {
 		App.realms = json.realms;
 		$('select[name="server"] option').remove();
 		
