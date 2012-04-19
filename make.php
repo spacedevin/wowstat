@@ -151,7 +151,6 @@ class Args {
 		}
 
 		$this->args = array_reverse($this->args);
-		print_r($this->flags);
 	}
 
 	public function flag($name) {
