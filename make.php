@@ -28,11 +28,18 @@ class Make {
 	}
 	
 	public function set($key, $var) {
-		putenv(strtoupper($key).'='.$var);
+		$this->params->{strtolower($key)} = $var;
 	}
 	
 	public function get($key) {
-		return getenv(strtoupper($key));
+		return $this->params->{strtolower($key)};
+	}
+	
+	public function replaceVar($var) {
+		foreach ($this->params as $key => $value) {
+			$var = str_replace('$['.strtoupper($key).']',$value,$var);
+		}
+		return $var;
 	}
 
 	public function parseFlags() {
@@ -68,7 +75,7 @@ class Make {
 	public function loadVars($configGroup) {
 		foreach ($configGroup as $configKey => $config) {
 			foreach ($config as $key => $value) {
-				$this->set($key,$value);
+				$this->set($key,$this->replaceVar($value));
 			}
 		}
 	}
@@ -86,7 +93,7 @@ class Make {
 				case 'Darwin';
 					$this->args->args = ['osx','osxpackage'];
 					break;
-				case 'Windows';
+				case 'WINNT';
 					$this->args->args = ['win32','win32package'];
 					break;
 				default:

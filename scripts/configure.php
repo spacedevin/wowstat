@@ -5,6 +5,7 @@
  *
  */
 
+
 $file = $this->get('project_root'). '/tiapp.xml';
 $xml = file($file);
 $replace = [
@@ -16,11 +17,14 @@ $replace = [
 foreach ($xml as $num => $line) {
 	foreach ($replace as $key => $item) {
 		if (preg_match('/\<'.$key.'\>(.*)?\<\/'.$key.'\>/',$line)) {
-			echo $this->get($item)."\n";
 			$xml[$num] = preg_replace('/\<'.$key.'\>(.*)?\<\/'.$key.'\>/','<'.$key.'>'.$this->get($item).'</'.$key.'>',$line);
 		}	
 	}
 
+}
+
+if ($this->args->flags['debug']) {
+	print_r($this->params);
 }
 
 file_put_contents($file, $xml);
