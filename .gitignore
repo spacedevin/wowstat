@@ -1,3 +1,5 @@
 tmp
 .metadata
 wowstat/dist
+build/*
+dist/*
