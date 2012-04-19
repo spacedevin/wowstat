@@ -1,1 +1,1 @@
-"C:\Program Files (x86)\GnuWin32\bin\make.exe" %1 %2 %3 %4
+"C:\Program Files (x86)\PHP\php.exe" make.php %1 %2 %3 %4 %5 %6 %7 %8 %9 %10 %11 %12 %13 %14 %15 %16 %17 %18 %19 %20

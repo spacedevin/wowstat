@@ -39,13 +39,15 @@ class Make {
 		foreach ($this->args->flags as $key => $value) {
 			switch ($key) {
 				case 'v':
-					$this->app_version = $value;
+				case 'version':				
+					$this->set('APP_VERSION', $value);
 					break;
 				case 't':
-					$this->build_type = $value == 'bundle' ? 'bundle' : 'network';
+				case 'type':
+					$this->set('BUILD_TYPE', 'bundle' ? 'bundle' : 'network');
 					break;
 				case 'sdk':
-					$this->ti_sdk_version = $value;
+					$this->set('TI_SDK_VERSION', $value);
 					break;
 			}
 		}
@@ -82,10 +84,10 @@ class Make {
 		if (!count($this->args->args)) {
 			switch (PHP_OS) {
 				case 'Darwin';
-					$this->args->args = ['osx'];
+					$this->args->args = ['osx','osxpackage'];
 					break;
 				case 'Windows';
-					$this->args->args = ['win32'];
+					$this->args->args = ['win32','win32package'];
 					break;
 				default:
 					die('nothing to do for '.PHP_OS);
@@ -93,13 +95,12 @@ class Make {
 		}
 
 		foreach ($this->args->args as $arg) {
-			switch ($arg) {
-				case 'osx';
-				case 'win32';
+			if (file_exists($this->get('SCRIPTS_PATH').'/'.$arg.'.php')) {
+				if (file_exists($this->get('SCRIPTS_PATH').'/'.$arg.'.ini')) {
 					$this->loadIni($this->get('SCRIPTS_PATH').'/'.$arg.'.ini');
 					include($this->get('SCRIPTS_PATH').'/configure.php');
-					include($this->get('SCRIPTS_PATH').'/'.$arg.'.php');
-					break;
+				}
+				include($this->get('SCRIPTS_PATH').'/'.$arg.'.php');
 			}
 		}
 	}
@@ -150,6 +151,7 @@ class Args {
 		}
 
 		$this->args = array_reverse($this->args);
+		print_r($this->flags);
 	}
 
 	public function flag($name) {

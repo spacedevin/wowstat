@@ -1,5 +1,7 @@
 <?php
 
+echo "Packaging for Win32...\n";
+
 $cmds = [
 	'rmdir /S /Q '.$this->get('current_path').'\build\win32',
 	'mkdir '.$this->get('current_path').'\build\win32"',
