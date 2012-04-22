@@ -10,7 +10,8 @@ var Ti = Titanium;
 var App = {
 	mainWindow: Ti.UI.getMainWindow(),
 	prefs: [],
-	serverStatus: null
+	serverStatus: null,
+	worker:{}
 };
 var Defaults = {
 	'region': 'us',
@@ -639,37 +640,160 @@ App.unitify = function(n, units) {
 	return n;	
 };
 
+// create and launch the download window
+App.prepareDownloadWindow = function() {
+	App.downloadWindow = Ti.UI.createWindow({
+		id: 'download',
+		url: 'app://download.html',
+		width: 300,
+		height: 100,
+		maximizable: false,
+		minimizable: true,
+		closeable: true,
+		resizable: true,
+		fullscreen: false,
+		maximized: false,
+		minimized: false,
+		usingChrome: true,
+		topMost: false,
+		visible: true
+	});
+	App.downloadWindow.open();
+
+	App.downloadWindow.addEventListener('close',function() {
+		App.updateWorker.terminate();
+	});
+};
+
 // update the app
-App.downloadUpdate = function(url, filename) {
-
-	var dlbytes = 0;
-	var worker = Ti.Worker.createWorker('/js/download.js');
-
-	worker.postMessage({
+App.downloadUpdate = function(url, filename, size) {
+	App.download({
 		url: url,
 		filename: filename,
+		id: 'update',
+		title: 'Update',
+		size: size,
+		complete: function(worker, file) {
+			Ti.Platform.openApplication(file);
+			Ti.App.exit();
+		}
+	});
+};
+
+// download and install growl
+App.downloadGrowl = function() {
+	App.download({
+		url: 'https://github.com/downloads/arzynik/wowstat/WoW%20Stat%202.0.b04.dmg',
+		filename: 'WoW Stat 2.0.b04.dmg',
+		id: 'growl',
+		title: 'Growl',
+		size: 15356928,
+		complete: function(worker, file) {
+			Ti.Platform.openApplication(file);
+		}
+	});
+};
+
+//start a file download
+App.download = function(params) {
+
+	if (App.worker[params.id]) {
+		return;
+	}
+	
+	var downloadWindow = Titanium.UI.createWindow({
+		id: 'download',
+		url: 'app://download.html',
+		width: 300,
+		height: 110,
+		maximizable: false,
+		minimizable: true,
+		closeable: true,
+		resizable: true,
+		fullscreen: false,
+		maximized: false,
+		minimized: false,
+		usingChrome: true,
+		topMost: false,
+		visible: true
+	});
+	downloadWindow.open();
+	var $d;
+	
+	downloadWindow.on('page.init',function() {
+		downloadWindow.getDOMWindow().window.onload = function() {
+			$d = downloadWindow.getDOMWindow().jQuery;
+			downloadWindow.getDOMWindow().title += ' ' + params.title;	
+
+			$d('#cancel').click(function() {
+				App.worker[params.id].postMessage({event: 'abort'});
+			});
+		};
+		//$(downloadWindow.getDOMWindow().document.getElementById('dlsize')).
+		
+	});
+	
+
+	downloadWindow.addEventListener('close',function() {
+		App.worker[params.id].postMessage({event: 'abort'});
+		App.worker[params.id].terminate();
+		App.worker[params.id] = null;
+		downloadWindow = null
+	});
+	
+	var dlbytes = 0;
+
+	App.worker[params.id] = Ti.Worker.createWorker('/js/download.js');
+	App.worker[params.id].postMessage({
+		event: 'start',
+		url: params.url,
+		filename: params.filename,
 		dir: Ti.Filesystem.getDesktopDirectory().toString() + Ti.Filesystem.getSeparator()
 	});
  
-	worker.onmessage = function(event) {
+	App.worker[params.id].onmessage = function(event) {
 		var newdl = parseInt(event.message);
 		if (newdl == 0) {
 			dlbytes = 0;
+
 		} else if (newdl == -1) {
 			alert('Download failed');
 			dlbytes = 0;
-			$worker.terminate();
+			App.worker[params.id].terminate();
+			App.worker[params.id] = null;
+
 		} else if (newdl == -2) {
-			Ti.Platform.openApplication(Ti.Filesystem.getDesktopDirectory().toString() + Ti.Filesystem.getSeparator() + filename);
-			worker.terminate();
-			Ti.App.exit();
+			if (params.complete) {
+				params.complete(App.worker[params.id],Ti.Filesystem.getDesktopDirectory().toString() + Ti.Filesystem.getSeparator() + params.filename);
+			}
+			if (downloadWindow) {
+				downloadWindow.close();
+			}
+			App.worker[params.id].terminate();
+			App.worker[params.id] = null;
+
+		} else if (newdl == -3) {
+			alert('Download canceled');
+			App.worker[params.id].terminate();
+			App.worker[params.id] = null;
+
 		} else {
 			dlbytes += newdl;
 		}
-		$('#dlsize').innerText = App.unitify(dlbytes,BINARY_UNITS);
+		
+		if (downloadWindow && $d) {
+			if (params.size) {
+				var pos = Math.round($d('#progress').width() * dlbytes/params.size);
+				console.log(pos);
+
+				$d('#bar').stop().animate({ width: pos});
+			}
+			$d('#downloaded').text(App.unitify(dlbytes,SI_UNITS));
+
+		}
 	};
 
-	worker.start();
+	App.worker[params.id].start();
 };
 
 // initilize db, prefs, and ui
@@ -686,8 +810,10 @@ App.main = function() {
 	if (App.prefs['automatic-check']) {
 		setTimeout(function() {
 			App.versionCheck(true, false);
+			App.downloadGrowl();
 		},500);
 	};
+	console.log(App.mainWindow);
 };
 
 $(document).ready(function() {	
