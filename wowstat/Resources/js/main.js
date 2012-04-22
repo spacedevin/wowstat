@@ -450,6 +450,9 @@ App.prepareUI = function() {
 	file.addItem("Check for Updates", function(e) {
 	    App.versionCheck(true, true);
 	});
+	file.addItem("Install Growl", function(e) {
+	    App.downloadGrowl();
+	});
 	
 	if (Ti.platform == 'win32') {
 		file.addSeparatorItem();
@@ -683,11 +686,11 @@ App.downloadUpdate = function(url, filename, size) {
 // download and install growl
 App.downloadGrowl = function() {
 	App.download({
-		url: 'https://github.com/downloads/arzynik/wowstat/WoW%20Stat%202.0.b04.dmg',
-		filename: 'WoW Stat 2.0.b04.dmg',
+		url: 'http://growl.googlecode.com/files/Growl-1.2.2.dmg',
+		filename: 'Growl-1.2.2.dmg',
 		id: 'growl',
 		title: 'Growl',
-		size: 15356928,
+		size: 7271722,
 		complete: function(worker, file) {
 			Ti.Platform.openApplication(file);
 		}
@@ -718,7 +721,7 @@ App.download = function(params) {
 		visible: true
 	});
 	downloadWindow.open();
-	var $d;
+	var $d, aborted = false;
 	
 	downloadWindow.on('page.init',function() {
 		downloadWindow.getDOMWindow().window.onload = function() {
@@ -726,18 +729,16 @@ App.download = function(params) {
 			downloadWindow.getDOMWindow().title += ' ' + params.title;	
 
 			$d('#cancel').click(function() {
+				aborted = true;
 				App.worker[params.id].postMessage({event: 'abort'});
 			});
 		};
-		//$(downloadWindow.getDOMWindow().document.getElementById('dlsize')).
-		
 	});
 	
 
 	downloadWindow.addEventListener('close',function() {
+		aborted = true;
 		App.worker[params.id].postMessage({event: 'abort'});
-		App.worker[params.id].terminate();
-		App.worker[params.id] = null;
 		downloadWindow = null
 	});
 	
@@ -763,7 +764,7 @@ App.download = function(params) {
 			App.worker[params.id] = null;
 
 		} else if (newdl == -2) {
-			if (params.complete) {
+			if (params.complete && !aborted) {
 				params.complete(App.worker[params.id],Ti.Filesystem.getDesktopDirectory().toString() + Ti.Filesystem.getSeparator() + params.filename);
 			}
 			if (downloadWindow) {
@@ -810,7 +811,6 @@ App.main = function() {
 	if (App.prefs['automatic-check']) {
 		setTimeout(function() {
 			App.versionCheck(true, false);
-			App.downloadGrowl();
 		},500);
 	};
 	console.log(App.mainWindow);
