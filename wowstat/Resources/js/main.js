@@ -643,31 +643,6 @@ App.unitify = function(n, units) {
 	return n;	
 };
 
-// create and launch the download window
-App.prepareDownloadWindow = function() {
-	App.downloadWindow = Ti.UI.createWindow({
-		id: 'download',
-		url: 'app://download.html',
-		width: 300,
-		height: 100,
-		maximizable: false,
-		minimizable: true,
-		closeable: true,
-		resizable: true,
-		fullscreen: false,
-		maximized: false,
-		minimized: false,
-		usingChrome: true,
-		topMost: false,
-		visible: true
-	});
-	App.downloadWindow.open();
-
-	App.downloadWindow.addEventListener('close',function() {
-		App.updateWorker.terminate();
-	});
-};
-
 // update the app
 App.downloadUpdate = function(url, filename, size) {
 	App.download({
@@ -785,8 +760,6 @@ App.download = function(params) {
 		if (downloadWindow && $d) {
 			if (params.size) {
 				var pos = Math.round($d('#progress').width() * dlbytes/params.size);
-				console.log(pos);
-
 				$d('#bar').stop().animate({ width: pos});
 			}
 			$d('#downloaded').text(App.unitify(dlbytes,SI_UNITS));
