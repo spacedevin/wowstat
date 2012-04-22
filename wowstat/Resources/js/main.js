@@ -533,8 +533,10 @@ App.addEvents = function() {
 	$('#browse').click(function() {
 		var props = {multiple:false,directories:false,files:true,types:['exe','app','bin','bat','sh']};
 		Ti.UI.openFileChooserDialog(function(f) {
-			$('input[name="wow-path"]').val(f[0]);
-			App.readPrefs();
+			if (f[0]) {
+				$('input[name="wow-path"]').val(f[0]);
+				App.readPrefs();
+			}
 		},props);
 	});
 	
