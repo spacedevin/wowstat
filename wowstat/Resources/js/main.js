@@ -148,14 +148,20 @@ App.getColor = function(status) {
 
 // triggered after a check
 App.checkComplete = function(json) {
-	var status = json.realms ? json.realms[0] : json,
+	var server = json.realms ? json.realms[0] : json,
 		color,
 		label;
-	
-	if (App.serverStatus !== null && App.serverStatus != status.status) {
-		App.notifyAction(status.status);
+
+	if (App._debug) {
+		if (server.slug == 'tichondrius') {
+			server.status = false;
+		}
 	}
-	var byStatus = App.getColor(status);
+	
+	if (App.serverStatus != null && App.serverStatus != server.status) {
+		App.notifyAction(server);
+	}
+	var byStatus = App.getColor(server);
 	color = byStatus.color;
 	label = byStatus.label; 
 	
@@ -165,7 +171,7 @@ App.checkComplete = function(json) {
 	App.trayStatus.setLabel(label);
 	$('.server-status-icon').css('background-image','url(/img/tray-status-icon-' + color + '-osx.png)');
 
-	App.serverStatus = status.status;
+	App.serverStatus = server.status;
 };
 
 // check to see if the server is up
@@ -183,9 +189,9 @@ App.check = function() {
 };
 
 // notify the user by their prefered action
-App.notifyAction = function(status) {
-	var realm = App.realm(App.prefs['server']);
-	if (status) {
+App.notifyAction = function(realm) {
+	realm = realm || App.realm(App.prefs.server);
+	if (realm.status) {
 		App.notify({
 			title: realm.name + ' is up!',
 			message: realm.name + ' is back up! Click here to launch WoW.',
@@ -275,6 +281,7 @@ App.preferences = function(prefs) {
 		if (prefs.region != prefRegion) {
 			App.getRealms();
 			App.prefs.server = App.realms[0].slug;
+			check = true;
 		}
 
 		for (x in App.prefs) {
@@ -283,6 +290,7 @@ App.preferences = function(prefs) {
 
 		App.dbDisconnect();
 		if (check) {
+			App.serverStatus = null;
 			App.check();
 		}
 		App.timers();
@@ -328,6 +336,15 @@ App.getRealms = function() {
 	var url = 'http://'+ App.prefs['region'].toLowerCase() +'.battle.net/api/wow/realm/status';
 	console.log(url);
 	App.request(url,function(json) {
+		if (App._debug) {
+			for (var x in json.realms) {
+				if (json.realms[x].slug == 'tichondrius') {
+					json.realms[x].status = false;
+				}
+			}
+		}
+		
+		
 		App.realms = json.realms;
 		$('select[name="server"] option').remove();
 		
