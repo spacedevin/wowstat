@@ -17,6 +17,8 @@ register_shutdown_function(function() {
 
 class Make {
 	public function __construct() {
+		$this->check();
+
 		$this->args = new Args;
 		$this->params = (object)[];
 		$this->set('CURRENT_PATH',dirname(__FILE__));
@@ -24,7 +26,6 @@ class Make {
 		$this->set('INI_PATH',$this->args->args['ini'] ? $this->args->args['ini'] : $this->get('SCRIPTS_PATH').'/globals.ini');
 		$this->loadIni($this->get('INI_PATH'));
 		$this->parseFlags();
-		$this->check();
 	}
 	
 	public function set($key, $var) {
@@ -51,7 +52,7 @@ class Make {
 					break;
 				case 't':
 				case 'type':
-					$this->set('BUILD_TYPE', 'bundle' ? 'bundle' : 'network');
+					$this->set('BUILD_TYPE', $value == 'bundle' ? 'bundle' : 'network');
 					break;
 				case 'sdk':
 					$this->set('TI_SDK_VERSION', $value);

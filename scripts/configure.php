@@ -5,9 +5,11 @@
  *
  */
 
+$this->loadVars();
 
-if ($this->args->flags['debug']) {
+if ($this->args->flags['d']) {
 	print_r($this->params);
+	exit;
 }
 
 $file = $this->get('project_root'). '/tiapp.xml';
@@ -34,7 +36,11 @@ $file = $this->get('current_path').'/assets/windows-nsis-setup.nsi';
 $cfg = file($file);
 
 $find = [
-	'/(define VERSION ")(.*?)(")/i',
+	'/(define CURRENT_PATH ")(.*?)(")/i',
+	'/(define PROJECT_ROOT ")(.*?)(")/i',
+	'/(define APP_URL ")(.*?)(")/i',
+	'/(define PROJECT_NAME ")(.*?)(")/i',
+	'/(define APP_NAME ")(.*?)(")/i',
 	'/(define DOT_MAJOR ")(.*?)(")/i',
 	'/(define DOT_MINOR ")(.*?)(")/i',
 	'/(define DOT_MINOR_MINOR ")(.*?)(")/i',
@@ -43,7 +49,11 @@ $find = [
 
 $v = explode('.',$this->get('app_version'));
 $replace = [
-	'\\1GHETTO'.$this->get('app_version').'\\3',
+	'\\1GHETTO'.$this->get('current_path').'\\3',
+	'\\1GHETTO'.$this->get('project_root').'\\3',
+	'\\1GHETTO'.$this->get('app_url').'\\3',
+	'\\1GHETTO'.$this->get('project_name').'\\3',
+	'\\1GHETTO'.$this->get('app_name').'\\3',
 	'\\1GHETTO'.$v[0].'\\3',
 	'\\1GHETTO'.$v[1].'\\3',
 	'\\1GHETTO'.$v[2].'\\3',
