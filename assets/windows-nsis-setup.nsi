@@ -4,12 +4,12 @@
 
 !define DOT_MAJOR "2"
 !define DOT_MINOR "0"
-!define DOT_MINOR_MINOR "b05"
+!define DOT_MINOR_MINOR "b06"
 !define APP_NAME "WoW Stat"
 !define APP_URL "http://wow-stat.net/"
 !define PROJECT_NAME "wowstat"
-!define PROJECT_ROOT "/Users/arzynik/Development/osx/wowstat/wowstat"
-!define CURRENT_PATH "/Users/arzynik/Development/osx/wowstat"
+!define PROJECT_ROOT "Z:\arzynik\Development\osx\wowstat\wowstat"
+!define CURRENT_PATH "Z:\arzynik\Development\osx\wowstat"
 
 
 
@@ -23,7 +23,7 @@ InstallDir "$PROGRAMFILES\${APP_NAME}"
 
 !include MUI2.nsh
 
-Icon "${PROJECT_ROOT}\build\win32\${APP_NAME}\Resources\_converted_icon.ico"
+Icon "${CURRENT_PATH}\assets\icon.ico"
 UninstallIcon "${NSISDIR}\Contrib\Graphics\Icons\box-uninstall.ico"
 
 
@@ -31,7 +31,7 @@ UninstallIcon "${NSISDIR}\Contrib\Graphics\Icons\box-uninstall.ico"
 !define MUI_HEADERIMAGE_BITMAP "${NSISDIR}\Contrib\Graphics\Header\win.bmp";
 !define MUI_WELCOMEFINISHPAGE_BITMAP "${NSISDIR}\Contrib\Graphics\Wizard\win.bmp"
 
-!define MUI_ICON "${PROJECT_ROOT}"
+!define MUI_ICON "${CURRENT_PATH}\assets\icon.ico"
 !define MUI_UNICON "${NSISDIR}\Contrib\Graphics\Icons\box-uninstall.ico"
 !define MUI_HEADER "${NSISDIR}\Contrib\Graphics\Header\win.bmp"
 

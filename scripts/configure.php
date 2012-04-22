@@ -5,7 +5,6 @@
  *
  */
 
-$this->loadVars();
 
 if ($this->args->flags['d']) {
 	print_r($this->params);
