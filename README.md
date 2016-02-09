@@ -6,9 +6,9 @@ WoW Stat is a World of Warcraft server monitor utility. All you have to set is t
 
 ### Status
 
-**There are builds in the Downloads section for OSX and Windows**
+**There are builds in the [Release](https://github.com/arzynik/wowstat/releases) section for OSX and Windows**
 
-This is a port of my C# app from 2007.
+This is a port of my C# app from 2007, this time written in HTML/Javascript for [titanium](http://www.appcelerator.com/mobile-app-development-products/)
 
 ### License 
-BSD. Enjoy.
+Free. BSD. Enjoy.
