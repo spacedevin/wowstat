@@ -1,0 +1,18 @@
+﻿<Properties>
+  <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
+  <MonoDevelop.Ide.Workbench ActiveDocument="Wow-Stat/functions.cs">
+    <Files>
+      <File FileName="Wow-Stat/Properties/Resources.Designer.cs" Line="1" Column="1" />
+      <File FileName="Wow-Stat/main.cs" Line="1" Column="1" />
+      <File FileName="Wow-Stat/Program.cs" Line="25" Column="14" />
+      <File FileName="Wow-Stat/functions.cs" Line="26" Column="17" />
+      <File FileName="Wow-Stat/main.resx" Line="1" Column="1" />
+      <File FileName="Wow-Stat/main.Designer.cs" Line="1" Column="1" />
+      <File FileName="Wow-Stat/Properties/AssemblyInfo.cs" Line="1" Column="1" />
+    </Files>
+  </MonoDevelop.Ide.Workbench>
+  <MonoDevelop.Ide.DebuggingService.Breakpoints>
+    <BreakpointStore />
+  </MonoDevelop.Ide.DebuggingService.Breakpoints>
+  <MonoDevelop.Ide.DebuggingService.PinnedWatches />
+</Properties>
