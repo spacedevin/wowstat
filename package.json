@@ -1,0 +1,31 @@
+{
+  "name": "wowstat",
+  "version": "1.0.0",
+  "description": "World of Warcraft server uptime monitor",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron ."
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/arzynik/wowstat.git"
+  },
+  "keywords": [
+    "wow",
+    "world of warcraft",
+    "stat",
+    "monitor"
+  ],
+  "author": "GitHub",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/arzynik/wowstat/issues"
+  },
+  "homepage": "http://wowst.at",
+  "devDependencies": {
+    "electron-prebuilt": "^1.2.0"
+  },
+  "dependencies": {
+    "electron-json-storage": "^2.0.0"
+  }
+}
