@@ -63,4 +63,13 @@ angular
 
 		loadRealms();
 
-	})
+		var notify = function(title, body) {
+			if (process.platform == 'darwin') {
+				new Notification(title, {
+					body: body
+				});
+			} else {
+				mainProcess.notify('test','this is test');
+			}
+		};
+	});

@@ -8,21 +8,20 @@
 	color: #fff;
 }
 
+
+* {
+	-webkit-user-select: none;
+}
+
 html {
 	-webkit-app-region: drag;
 }
 
-body, #loading-overlay {
-	background: #eee url(/img/bg.png);
-	background-position: 0px -300px;
-}
 body {
-	color: #3f5167;
 	font: 12px "Lucida Grande", Helvetica, Arial, Verdana, sans-serif;
 	line-height: 1.6em;
-	text-shadow: 1px 1px 1px rgba(255, 255, 255, 0.95);
 	overflow: hidden;
-	background: #fff;
+	background: #272e3b;
 }
 
 .content {
@@ -44,8 +43,11 @@ td:first-child {
 
 input, select, button {
 	font-size: 12px;
-	color: #3f5167;
 	-webkit-app-region: no-drag;
+}
+
+input, select, button, body {
+	color: #d0d0d0;
 }
 
 input[type="text"] {

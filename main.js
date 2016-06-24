@@ -1,6 +1,8 @@
 const electron = require('electron');
 const {app, BrowserWindow, dialog, Menu, Tray} = electron;
 const AutoLaunch = require('auto-launch');
+const notifier = require('node-notifier');
+const path = require('path');
 
 let win;
 let tray = null;
@@ -47,7 +49,7 @@ app.on('ready', () => {
 		{label: 'Enabled', type: 'radio', checked: true}
 	]);
 	tray.setToolTip('WoW Stat')
-	tray.setContextMenu(contextMenu)
+	tray.setContextMenu(contextMenu);
 
 	createWindow();
 });
@@ -69,7 +71,7 @@ app.on('activate', () => {
 	}
 });
 
-exports.selectDirectory = function (fn) {
+exports.selectDirectory = (fn) => {
 	var res = dialog.showOpenDialog(win, {
 		properties: ['openFile', 'openDirectory']
 	});
@@ -77,6 +79,23 @@ exports.selectDirectory = function (fn) {
 	//console.log(dialog.showOpenDialog({properties: ['openFile', 'openDirectory', 'multiSelections']}));
 }
 
-exports.setAutoload = function (fn) {
+exports.setAutoload = (fn) => {
 	launcher.enable();
+}
+
+exports.notify = (title, message, fn) => {
+	notifier.notify({
+		title: title,
+		message: message,
+		icon: path.join(__dirname, 'w@2x.png'),
+		sound: true,
+		contentImage: void 0,
+		wait: false
+	}, (err, response) => {
+		console.log(arguments);
+	});
+
+	notifier.on('click', (notifierObject, options) => {
+		fn();
+	});
 }
