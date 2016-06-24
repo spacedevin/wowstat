@@ -4,7 +4,6 @@
 		<link rel="stylesheet" href="reset.css" type="text/css">
 		<link rel="stylesheet" href="style.css" type="text/css">
 		<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.7/angular.min.js"></script>
-
 	</head>
 	<body>
 		<div class="content">
@@ -21,16 +20,22 @@
 						<select ng-model="options.realm" required ng-options="region.value as realm.name for realm in realms"></select>
 					</td>
 				</tr>
+				<!--
 				<tr>
-					<td>If my server is up, check every:</td>
-					<td><select name="check-up"></select></td>
+					<td>When realm is up, check every:</td>
+					<td>
+						<input type="number" min="1" max="60" ng-model="options.up">
+					</td>
 				</tr>
 				<tr>
-					<td>If my server is down, check every:</td>
-					<td><select name="check-down"></select></td>
+					<td>When realm is down, check every:</td>
+					<td>
+						<input type="number" min="1" max="60" ng-model="options.down">
+					</td>
 				</tr>
+				-->
 				<tr>
-					<td>When my server comes back up:</td>
+					<td>When realm comes up:</td>
 					<td>
 						<input type="radio" name="notify-up-action" value="nothing" id="notify-up-action-nothing"><label for="notify-up-action-nothing">Do nothing</label><br />
 						<input type="radio" name="notify-up-action" value="notify" id="notify-up-action-notify"><label for="notify-up-action-notify">Notify me</label><br />
@@ -38,7 +43,7 @@
 					</td>
 				</tr>
 				<tr>
-					<td>When my server goes down:</td>
+					<td>When realm goes down:</td>
 					<td>
 						<input type="radio" name="notify-down-action" value="nothing" id="notify-down-action-nothing"><label for="notify-down-action-nothing">Do nothing</label><br />
 						<input type="radio" name="notify-down-action" value="notify" id="notify-down-action-notify"><label for="notify-down-action-notify">Notify me</label><br />
@@ -51,18 +56,12 @@
 				<tr>
 					<td colspan="2">
 						<input type="text" ng-model="options.path">
-						<button ng-click="selectPath()">Browse...</button>
+						<button ng-click="selectPath()">Browse</button>
 					</td>
 				</tr>
 				<tr><td><br /></td></tr>
 				<tr><td colspan="2">
 					<input type="checkbox" id="startup-load" name="startup-load"><label for="startup-load">Launch WoW Stat when your computer starts</label>
-					</td></tr>
-				<tr><td colspan="2">
-					<input type="checkbox" id="startup-show-window" name="startup-show-window"><label for="startup-show-window">Show this window when WoW Stat starts</label>
-					</td></tr>
-				<tr><td colspan="2">
-					<input type="checkbox" id="automatic-check" name="automatic-check"><label for="automatic-check">Automaticly check for updates</label>
 					</td></tr>
 			</table>
 			<br />
@@ -71,7 +70,7 @@
 					Registering is completly free. All it does for you is lets you know when there are major updates. All it does for me is lets me know people are actulay using this software. You do not have to register ever.
 				</p>
 				<input type="text" name="email" placeholder="Your email">
-				<button id="register">Register</button>
+				<button>Register</button>
 			</div>
 		</div>
 

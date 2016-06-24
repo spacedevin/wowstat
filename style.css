@@ -4,7 +4,12 @@
 }
 
 ::selection {
-	background: transparent;
+	background: #414b59;
+	color: #fff;
+}
+
+html {
+	-webkit-app-region: drag;
 }
 
 body, #loading-overlay {
@@ -21,8 +26,8 @@ body {
 }
 
 .content {
-	margin: 20px;
-	padding-top: 25px;
+	margin: 10px;
+	padding-top: 15px;
 }
 
 td {
@@ -40,6 +45,7 @@ td:first-child {
 input, select, button {
 	font-size: 12px;
 	color: #3f5167;
+	-webkit-app-region: no-drag;
 }
 
 input[type="text"] {
@@ -47,19 +53,8 @@ input[type="text"] {
 	background: none;
 	height: 23px;
 	border-radius: 3px;
-	border: 1px solid #597291;
-}
-
-input[name="wow-path"] {
+	border: 1px solid #9cb4d1;
 	width: 280px;
-}
-input[name="email"] {
-	width: 280px;
-	margin-top: 15px;
-}
-
-.registration {
-
 }
 
 p {
@@ -74,8 +69,18 @@ h1 {
 }
 
 button {
-	padding: 3px;
+	padding: 6px 10px 6px 10px;
 	margin-left: 15px;
+	border: 1px solid #22b8eb;
+	color: #22b8eb;
+	background: none;
+	border-radius: 2px;
+	text-transform: uppercase;
+	cursor: pointer;
+}
+
+input[type="text"], button {
+	height: 30px;
 }
 
 .header {
@@ -102,13 +107,8 @@ button {
 	float: right;
 	height: 18px;
 	width: 15px;
-
 }
 
-html {
-	-webkit-app-region: drag;
-}
-
-input, button {
-	-webkit-app-region: no-drag;
+.registration p {
+	margin-bottom: 6px;
 }

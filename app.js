@@ -38,18 +38,26 @@ angular
 		$rootScope.realms = [];
 		$rootScope.selectPath = function() {
 			mainProcess.selectDirectory(function(res) {
-				console.log(res);
+				if (!res) {
+					return;
+				}
+				$rootScope.$apply(function($scope) {
+					$scope.options.path = res;
+				});
 			});
 		};
 
 		$rootScope.options = {
 			region: $rootScope.regions[0].value,
+			up: 5,
+			down: 1,
 			path: process.platform == 'darwin' ? '/Applications/World of Warcraft/World of Warcraft.app': 'C:\\Program Files\\World of Warcraft\\WoW.exe'
 		};
 
 		var loadRealms = function() {
 			$http.get('https://' + $rootScope.options.region + '.api.battle.net/wow/realm/status?locale=en_US&apikey=hw9djbbcu2cjacq36swsdkmq7y6cfnnt').then(function(res) {
 				$rootScope.realms = res.data.realms;
+				$rootScope.options.realm = $rootScope.realms[0].value;
 			});
 		};
 

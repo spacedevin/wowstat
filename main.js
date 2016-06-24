@@ -1,11 +1,29 @@
 const electron = require('electron');
-const {app, BrowserWindow, dialog} = electron;
+const {app, BrowserWindow, dialog, Menu, Tray} = electron;
+const AutoLaunch = require('auto-launch');
 
 let win;
+let tray = null;
+
+
+var launcher = new AutoLaunch({
+	name: 'WoW Stat',
+	path: '/Applications/WoW Stat.app',
+	isHidden: false
+});
+
+launcher.enable();
+console.log(launcher.isEnabled());
 
 function createWindow() {
 	// Create the browser window.
-	win = new BrowserWindow({width: 500, height: 600, titleBarStyle: 'hidden', resizable: false});
+	win = new BrowserWindow({
+		width: 400,
+		height: 490,
+		titleBarStyle: 'hidden',
+		resizable: false,
+		title: 'WoW Stat'
+	});
 
 	// and load the index.html of the app.
 	win.loadURL(`file://${__dirname}/index.html`);
@@ -22,10 +40,17 @@ function createWindow() {
 	});
 }
 
-// This method will be called when Electron has finished
-// initialization and is ready to create browser windows.
-// Some APIs can only be used after this event occurs.
-app.on('ready', createWindow);
+app.on('ready', () => {
+	tray = new Tray('w@2x.png');
+	const contextMenu = Menu.buildFromTemplate([
+		{label: 'Settings'},
+		{label: 'Enabled', type: 'radio', checked: true}
+	]);
+	tray.setToolTip('WoW Stat')
+	tray.setContextMenu(contextMenu)
+
+	createWindow();
+});
 
 // Quit when all windows are closed.
 app.on('window-all-closed', () => {
@@ -50,4 +75,8 @@ exports.selectDirectory = function (fn) {
 	});
 	fn(res);
 	//console.log(dialog.showOpenDialog({properties: ['openFile', 'openDirectory', 'multiSelections']}));
+}
+
+exports.setAutoload = function (fn) {
+	launcher.enable();
 }
