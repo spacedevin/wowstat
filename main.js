@@ -3,9 +3,9 @@ const {app, BrowserWindow, dialog, Menu, Tray} = electron;
 const AutoLaunch = require('auto-launch');
 const notifier = require('node-notifier');
 const path = require('path');
-
 let win;
 let tray = null;
+let options = {};
 
 
 var launcher = new AutoLaunch({

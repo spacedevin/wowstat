@@ -37,17 +37,17 @@
 				<tr>
 					<td>When realm comes up:</td>
 					<td>
-						<input type="radio" name="notify-up-action" value="nothing" id="notify-up-action-nothing"><label for="notify-up-action-nothing">Do nothing</label><br />
-						<input type="radio" name="notify-up-action" value="notify" id="notify-up-action-notify"><label for="notify-up-action-notify">Notify me</label><br />
-						<input type="radio" name="notify-up-action" value="launch" id="notify-up-action-launch"><label for="notify-up-action-launch">Launch WoW</label>
+						<input type="radio" ng-model="options.actionUp" value="nothing" id="notify-up-action-nothing"><label for="notify-up-action-nothing">Do nothing</label><br />
+						<input type="radio" ng-model="options.actionUp" value="notify" id="notify-up-action-notify"><label for="notify-up-action-notify">Notify me</label><br />
+						<input type="radio" ng-model="options.actionUp" value="launch" id="notify-up-action-launch"><label for="notify-up-action-launch">Launch WoW</label>
 					</td>
 				</tr>
 				<tr>
 					<td>When realm goes down:</td>
 					<td>
-						<input type="radio" name="notify-down-action" value="nothing" id="notify-down-action-nothing"><label for="notify-down-action-nothing">Do nothing</label><br />
-						<input type="radio" name="notify-down-action" value="notify" id="notify-down-action-notify"><label for="notify-down-action-notify">Notify me</label><br />
-						<input type="radio" name="notify-down-action" value="launch" id="notify-down-action-launch"><label for="notify-down-action-launch">Launch WoW</label>
+						<input type="radio" ng-model="options.actionDown" value="nothing" id="notify-down-action-nothing"><label for="notify-down-action-nothing">Do nothing</label><br />
+						<input type="radio" ng-model="options.actionDown" value="notify" id="notify-down-action-notify"><label for="notify-down-action-notify">Notify me</label><br />
+						<input type="radio" ng-model="options.actionDown" value="launch" id="notify-down-action-launch"><label for="notify-down-action-launch">Launch WoW</label>
 					</td>
 				</tr>
 				<tr>
