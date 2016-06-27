@@ -30,8 +30,8 @@ angular
 		});
 	})
 */
-	.run(() => {
-
+	.run(($rootScope) => {
+		$rootScope.loaded = true;
 	})
 	.controller('main', ($scope, $http) => {
 		$scope.regions = [
@@ -54,12 +54,11 @@ angular
 		};
 
 		$scope.options = mainProcess.options();
-
-		$scope.realms = [];
+		$scope.realms = mainProcess.realms;
 
 		ipcRenderer.on('server-status', (event, arg) => {
 			$scope.$apply(($scope) => {
-				$scope.realms = arg.realms;
+				$scope.realms = arg;
 				if (!$scope.options.realm) {
 					$scope.options.realm = $scope.realms[0].value;
 				}
@@ -70,7 +69,14 @@ angular
 
 		$scope.$watch('options', (oldval, newval) => {
 			console.debug('options changed', $scope.options);
-			mainProcess.options($scope.options);
+			if (oldval.region != newval.region) {
+				mainProcess.update();
+			}
+			if (oldval.autoload != newval.autoload) {
+				mainProcess.autoload();
+			}
+			//mainProcess.options($scope.options);
+
 			storage.set('options', $scope.options, (error) => {
 				if (error) throw error;
 			});

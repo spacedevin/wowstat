@@ -3,10 +3,9 @@
 		<title>WoW Stat</title>
 		<link rel="stylesheet" href="reset.css" type="text/css">
 		<link rel="stylesheet" href="style.css" type="text/css">
-		<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.7/angular.min.js"></script>
 	</head>
 	<body>
-		<div class="content" ng-controller="main">
+		<div class="content" ng-controller="main" ng-class="{loaded: loaded}">
 			<table>
 				<tr>
 					<td>Region:</td>
@@ -20,20 +19,7 @@
 						<select ng-model="options.realm" required ng-options="realm.slug as realm.name for realm in realms"></select>
 					</td>
 				</tr>
-				<!--
-				<tr>
-					<td>When realm is up, check every:</td>
-					<td>
-						<input type="number" min="1" max="60" ng-model="options.up">
-					</td>
-				</tr>
-				<tr>
-					<td>When realm is down, check every:</td>
-					<td>
-						<input type="number" min="1" max="60" ng-model="options.down">
-					</td>
-				</tr>
-				-->
+				<tr><td><br></td></tr>
 				<tr>
 					<td>When realm comes up:</td>
 					<td>
@@ -47,7 +33,7 @@
 					<td>
 						<input type="radio" ng-model="options.actionDown" value="nothing" id="notify-down-action-nothing"><label for="notify-down-action-nothing">Do nothing</label><br />
 						<input type="radio" ng-model="options.actionDown" value="notify" id="notify-down-action-notify"><label for="notify-down-action-notify">Notify me</label><br />
-						<input type="radio" ng-model="options.actionDown" value="launch" id="notify-down-action-launch"><label for="notify-down-action-launch">Launch WoW</label>
+						<input type="radio" ng-model="options.actionDown" value="close" id="notify-down-action-launch"><label for="notify-down-action-launch">Close WoW</label>
 					</td>
 				</tr>
 				<tr>
@@ -59,24 +45,14 @@
 						<button ng-click="selectPath()">Browse</button>
 					</td>
 				</tr>
-				<tr><td><br /></td></tr>
 				<tr><td colspan="2">
-					<input type="checkbox" id="startup-load" name="startup-load"><label for="startup-load">Launch WoW Stat when your computer starts</label>
+					<input type="checkbox" id="startup-load" ng-model="options.autoload"><label for="startup-load">Launch WoW Stat when your computer starts</label>
 					</td></tr>
 			</table>
-			<!--
-			<br />
-			<div class="registration">
-				<p>
-					Registering is completly free. All it does for you is lets you know when there are major updates. All it does for me is lets me know people are actulay using this software. You do not have to register ever.
-				</p>
-				<input type="text" name="email" placeholder="Your email">
-				<button>Register</button>
-			</div>
-			-->
 		</div>
 
 	</body>
+	<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.7/angular.min.js"></script>
 	<script>
 		require('./app.js')
 	</script>

@@ -27,6 +27,10 @@ body {
 .content {
 	margin: 10px;
 	padding-top: 15px;
+	display: none;
+}
+.content.loaded {
+	display: block;
 }
 
 td {

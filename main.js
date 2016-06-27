@@ -6,27 +6,24 @@ const path = require('path');
 const request = require('request');
 const storage = require('electron-json-storage');
 const {ipcMain} = require('electron');
+const child_process = require('child_process');
 
 let win;
 let tray = null;
 let options = {};
 let interval = null;
-let status = false;
-
+let status = null;
 
 var launcher = new AutoLaunch({
 	name: 'WoW Stat',
-	path: '/Applications/WoW Stat.app',
+	path: app.getAppPath(),
 	isHidden: false
 });
 
-launcher.enable();
-console.log(launcher.isEnabled());
-
 var createWindow = () => {
 	win = new BrowserWindow({
-		width: 400,
-		height: 320,
+		width: 398,
+		height: 305,
 		titleBarStyle: 'hidden',
 		resizable: false,
 		title: 'WoW Stat'
@@ -43,6 +40,7 @@ var createWindow = () => {
 };
 
 var notify = (s, realm) => {
+	console.log('notifying');
 	var action = options[s ? 'actionUp' : 'actionDown'];
 	if (action == 'notify') {
 		let data = {
@@ -54,31 +52,48 @@ var notify = (s, realm) => {
 		} else {
 			exports.notify(data.title, data.message);
 		}
+		return;
+	}
+
+	if (action == 'launch' && options.path) {
+		child_process.exec('open "' + options.path + '"', (error, stdout, stderr) => {
+			if (error) {
+				console.error(`exec error: ${error}`);
+				return;
+			}
+			console.log(`stdout: ${stdout}`);
+			console.log(`stderr: ${stderr}`);
+		});
 	}
 };
 
 var checkServer = () => {
-	request('https://eu.api.battle.net/wow/realm/status?locale=en_US&apikey=hw9djbbcu2cjacq36swsdkmq7y6cfnnt', function (error, response, body) {
+	request('http://localhost:3000/status?region=' + options.region, function (error, response, body) {
 		if (!error && response.statusCode == 200) {
-			body = JSON.parse(body);
-			win.webContents.send('server-status', body);
+			body = JSON.parse(body).hits.hits;
+			var rs = [];
+			for (var x in body) {
+				rs.push(body[x]._source);
+			}
+			win.webContents.send('server-status', rs);
+			exports.realms = rs;
 
 			if (options.realm) {
-				for (var x in body.realms) {
+				for (var x in rs) {
 
-					if (body.realms[x].slug == options.realm) {
+					if (rs[x].slug == options.realm) {
 
 						if (status === false || status === true) {
-							if (body.realms[x].status != status) {
-								if (body.realms[x].status) {
-									notify(true, body.realms[x]);
+							if (rs[x].status != status) {
+								if (rs[x].status) {
+									notify(true, rs[x]);
 								} else {
-									notify(false, body.realms[x]);
+									notify(false, rs[x]);
 								}
 							}
 						}
 
-						status = body.realms[x].status;
+						status = rs[x].status;
 
 						break;
 					}
@@ -129,7 +144,8 @@ app.on('ready', () => {
 		intervalDown: 1,
 		path: process.platform == 'darwin' ? '/Applications/World of Warcraft/World of Warcraft.app': 'C:\\Program Files\\World of Warcraft\\WoW.exe',
 		actionUp: 'notify',
-		actionDown: 'notify'
+		actionDown: 'notify',
+		autoload: false
 	};
 
 	changeInterval();
@@ -202,16 +218,23 @@ exports.hide = () => {
 	win.hide();
 }
 
+exports.autoload = (on) => {
+	if (options.autoload) {
+		launcher.enable();
+	} else {
+		launcher.disable();
+	}
+};
+
+exports.update = () => {
+	changeInterval();
+};
+
 exports.options = (o) => {
 	if (o) {
-		let changed = false;;
-		if (o.realm != options.realm) {
-			changed = true;
-		}
 		options = o;
-		if (changed) {
-			changeInterval();
-		}
 	}
 	return options;
 };
+
+exports.realms = [];

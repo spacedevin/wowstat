@@ -1,10 +1,21 @@
 {
   "name": "wowstat",
+  "build": {
+    "appId": "at.wowst",
+    "productName": "WoW Stat",
+    "app-category-type": "public.app-category.utilities",
+    "mac": {
+      "identity": "devin smith (23ANY47UK9)"
+    }
+  },
   "version": "1.0.0",
-  "description": "World of Warcraft server uptime monitor",
+  "description": "World of Warcraft realm status monitor",
   "main": "main.js",
   "scripts": {
-    "start": "electron ."
+    "start": "electron .",
+    "postinstall": "install-app-deps",
+    "pack": "build --dir",
+    "dist": "build"
   },
   "repository": {
     "type": "git",
@@ -27,6 +38,7 @@
   },
   "dependencies": {
     "auto-launch": "^2.0.1",
+    "electron-builder": "^5.10.1",
     "electron-json-storage": "^2.0.0",
     "node-notifier": "^4.6.0",
     "request": "^2.72.0"
