@@ -28,6 +28,7 @@
   "dependencies": {
     "auto-launch": "^2.0.1",
     "electron-json-storage": "^2.0.0",
-    "node-notifier": "^4.6.0"
+    "node-notifier": "^4.6.0",
+    "request": "^2.72.0"
   }
 }

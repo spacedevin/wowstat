@@ -2,6 +2,7 @@ const electron = require('electron');
 const {remote} = electron;
 const mainProcess = remote.require('./main');
 const storage = require('electron-json-storage');
+const {ipcRenderer} = require('electron');
 
 
 angular
@@ -52,54 +53,28 @@ angular
 			});
 		};
 
-		$scope.options = {
-			region: $scope.regions[0].value,
-			up: 5,
-			down: 1,
-			path: process.platform == 'darwin' ? '/Applications/World of Warcraft/World of Warcraft.app': 'C:\\Program Files\\World of Warcraft\\WoW.exe',
-			actionUp: 'notify',
-			actionDown: 'notify'
-		};
-			$scope.$watch('options', () => {
-				console.debug('options YAY');
-			}, true);
+		$scope.options = mainProcess.options();
 
 		$scope.realms = [];
 
-		storage.get('options', (error, options) => {
-			if (error) throw error;
-			console.debug('current options', options, Object.keys(options).length);
-
-			if (!Object.keys(options).length) {
-				console.debug('no options');
-				storage.set('options', $scope.options, (error) => {
-					if (error) throw error;
-					console.log(options);
-				});
-			} else {
-				console.debug('options exist');
-				$scope.$apply(($scope) => {
-					$scope.options = options;
-				});
-			}
-
-
-		});
-
-		$scope.$watch('options', (oldval, newval) => {
-			console.debug('options changed', $scope.options);
-			storage.set('options', $scope.options, (error) => {
-				if (error) throw error;
-			});
-		}, true);
-		var loadRealms = () => {
-			$http.get('https://' + $scope.options.region + '.api.battle.net/wow/realm/status?locale=en_US&apikey=hw9djbbcu2cjacq36swsdkmq7y6cfnnt').then((res) => {
-				$scope.realms = res.data.realms;
+		ipcRenderer.on('server-status', (event, arg) => {
+			$scope.$apply(($scope) => {
+				$scope.realms = arg.realms;
 				if (!$scope.options.realm) {
 					$scope.options.realm = $scope.realms[0].value;
 				}
 			});
-		};
+
+			console.log(arg);
+		});
+
+		$scope.$watch('options', (oldval, newval) => {
+			console.debug('options changed', $scope.options);
+			mainProcess.options($scope.options);
+			storage.set('options', $scope.options, (error) => {
+				if (error) throw error;
+			});
+		}, true);
 
 		storage.get('realms', (error, realms) => {
 			if (error) throw error;
@@ -119,7 +94,11 @@ angular
 				});
 			});
 
-			loadRealms();
+			//loadRealms();
+		});
+
+		ipcRenderer.on('notify', (event, arg) => {
+			notify(arg.title, arg.body)
 		});
 
 
@@ -133,3 +112,4 @@ angular
 			}
 		};
 	});
+

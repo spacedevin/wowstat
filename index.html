@@ -17,7 +17,7 @@
 				<tr>
 					<td>Realm:<div class="server-status-icon"></div></td>
 					<td>
-						<select ng-model="options.realm" required ng-options="region.value as realm.name for realm in realms"></select>
+						<select ng-model="options.realm" required ng-options="realm.slug as realm.name for realm in realms"></select>
 					</td>
 				</tr>
 				<!--
@@ -64,6 +64,7 @@
 					<input type="checkbox" id="startup-load" name="startup-load"><label for="startup-load">Launch WoW Stat when your computer starts</label>
 					</td></tr>
 			</table>
+			<!--
 			<br />
 			<div class="registration">
 				<p>
@@ -72,6 +73,7 @@
 				<input type="text" name="email" placeholder="Your email">
 				<button>Register</button>
 			</div>
+			-->
 		</div>
 
 	</body>
