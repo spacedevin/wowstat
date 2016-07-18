@@ -7,6 +7,7 @@ const request = require('request');
 const storage = require('electron-json-storage');
 const {ipcMain} = require('electron');
 const child_process = require('child_process');
+const {nativeImage} = require('electron');
 
 let win;
 let tray = null;
@@ -68,7 +69,7 @@ var notify = (s, realm) => {
 };
 
 var checkServer = () => {
-	request('http://localhost:3000/status?region=' + options.region, function (error, response, body) {
+	request('cache.wowst.at/status?region=' + options.region, function (error, response, body) {
 		if (!error && response.statusCode == 200) {
 			body = JSON.parse(body).hits.hits;
 			var rs = [];
@@ -114,7 +115,10 @@ var changeInterval = () => {
 };
 
 app.on('ready', () => {
-	tray = new Tray('w@2x.png');
+
+	var image = nativeImage.createFromPath(path.join(__dirname) + '/w@2x.png');
+	tray = new Tray(image);
+
 	const contextMenu = Menu.buildFromTemplate([
 		{
 			label: 'Settings',
