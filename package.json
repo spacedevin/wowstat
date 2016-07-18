@@ -5,7 +5,7 @@
     "productName": "WoW Stat",
     "app-category-type": "public.app-category.utilities",
     "mac": {
-      "identity": "devin smith (23ANY47UK9)"
+      "identity": "Devin Smith (GS29G47H7V)"
     }
   },
   "version": "1.0.0",
@@ -14,8 +14,8 @@
   "scripts": {
     "start": "electron .",
     "postinstall": "install-app-deps",
-    "pack": "build --dir",
-    "dist": "build"
+    "icon": "sips -s format icns build/icon.png --out build/icon.icns",
+    "build": "node_modules/.bin/build"
   },
   "repository": {
     "type": "git",
@@ -27,7 +27,7 @@
     "stat",
     "monitor"
   ],
-  "author": "GitHub",
+  "author": "Devin Smith",
   "license": "MIT",
   "bugs": {
     "url": "https://github.com/arzynik/wowstat/issues"
