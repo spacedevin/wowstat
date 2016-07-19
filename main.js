@@ -8,6 +8,11 @@ const storage = require('electron-json-storage');
 const {ipcMain} = require('electron');
 const child_process = require('child_process');
 const {nativeImage} = require('electron');
+const open = require('open');
+const {setLocale} = require('./strings');
+var strings = setLocale('en_US');
+
+
 
 let win;
 let tray = null;
@@ -24,7 +29,7 @@ var launcher = new AutoLaunch({
 var createWindow = () => {
 	win = new BrowserWindow({
 		width: 398,
-		height: 305,
+		height: 285,
 		titleBarStyle: 'hidden',
 		resizable: false,
 		title: 'WoW Stat'
@@ -68,8 +73,23 @@ var notify = (s, realm) => {
 	}
 };
 
+var setStatus = (s) => {
+	var icon = '';
+	if (s.status == false) {
+		icon = '-red';
+	} else {
+		if (s.queue == true) {
+			icon = '-yellow';
+		} else {
+			icon = '-green';
+		}
+	}
+	console.log('setting icon to '+icon);
+	tray.setImage(nativeImage.createFromPath(path.join(__dirname) + '/w' + icon + '@2x.png'));
+};
+
 var checkServer = () => {
-	request('cache.wowst.at/status?region=' + options.region, function (error, response, body) {
+	request('http://cache.wowst.at/status?region=' + options.region, function (error, response, body) {
 		if (!error && response.statusCode == 200) {
 			body = JSON.parse(body).hits.hits;
 			var rs = [];
@@ -84,8 +104,10 @@ var checkServer = () => {
 
 					if (rs[x].slug == options.realm) {
 
-						if (status === false || status === true) {
-							if (rs[x].status != status) {
+						if (rs[x].status != status) {
+							setStatus(rs[x]);
+
+							if (status === false || status === true) {
 								if (rs[x].status) {
 									notify(true, rs[x]);
 								} else {
@@ -95,7 +117,6 @@ var checkServer = () => {
 						}
 
 						status = rs[x].status;
-
 						break;
 					}
 				}
@@ -114,14 +135,10 @@ var changeInterval = () => {
 	}, options.intervalDown * 1000 * 60);
 };
 
-app.on('ready', () => {
-
-	var image = nativeImage.createFromPath(path.join(__dirname) + '/w@2x.png');
-	tray = new Tray(image);
-
-	const contextMenu = Menu.buildFromTemplate([
+var createMenu = () => {
+	return contextMenu = Menu.buildFromTemplate([
 		{
-			label: 'Settings',
+			label: strings.settings,
 			click: () => {
 				if (win === null) {
 					createWindow();
@@ -131,16 +148,43 @@ app.on('ready', () => {
 			}
 		},
 		{
-			label: 'Enabled',
+			label: strings.enabled,
 			type: 'checkbox',
 			checked: true,
 			click: (e) => {
 				console.log(e.checked);
 			}
+		},
+		{
+			label: strings.launch,
+			click: (e) => {
+				open(options.path);
+			}
+		},
+		{
+			type: 'separator'
+		},
+		{
+			label: strings.help,
+			click: (e) => {
+				open('http://wowst.at');
+			}
+		},
+		{
+			label: strings.quit,
+			click: (e) => {
+				app.quit();
+			}
 		}
 	]);
+};
+
+app.on('ready', () => {
+
+	var image = nativeImage.createFromPath(path.join(__dirname) + '/w@2x.png');
+	tray = new Tray(image);
 	tray.setToolTip('WoW Stat')
-	tray.setContextMenu(contextMenu);
+	tray.setContextMenu(createMenu());
 
 	options = {
 		region: 'us',
@@ -242,3 +286,10 @@ exports.options = (o) => {
 };
 
 exports.realms = [];
+
+exports.strings = strings;
+exports.setLocale = (loc) => {
+	strings = setLocale(loc);
+	tray.setContextMenu(createMenu());
+	return exports.strings = strings;
+};

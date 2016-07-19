@@ -41,6 +41,7 @@
     "electron-builder": "^5.10.1",
     "electron-json-storage": "^2.0.0",
     "node-notifier": "^4.6.0",
+    "open": "0.0.5",
     "request": "^2.72.0"
   }
 }

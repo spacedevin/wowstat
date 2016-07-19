@@ -4,6 +4,7 @@ const mainProcess = remote.require('./main');
 const storage = require('electron-json-storage');
 const {ipcRenderer} = require('electron');
 
+var strings = mainProcess.setLocale(navigator.language);
 
 angular
 	.module('wowstat', []) //'ngRoute', 'ngResource'
@@ -34,6 +35,7 @@ angular
 		$rootScope.loaded = true;
 	})
 	.controller('main', ($scope, $http) => {
+		$scope.strings = strings;
 		$scope.regions = [
 			{name: 'US, Oceania, Latin America & Brazil', value: 'us'},
 			{name: 'Europe & Russia', value: 'eu'},

@@ -8,45 +8,44 @@
 		<div class="content" ng-controller="main" ng-class="{loaded: loaded}">
 			<table>
 				<tr>
-					<td>Region:</td>
+					<td>{{strings.region}}:</td>
 					<td>
 						<select ng-model="options.region" required ng-options="region.value as region.name for region in regions"></select>
 					</td>
 				</tr>
 				<tr>
-					<td>Realm:<div class="server-status-icon"></div></td>
+					<td>{{strings.realm}}:<div class="server-status-icon"></div></td>
 					<td>
 						<select ng-model="options.realm" required ng-options="realm.slug as realm.name for realm in realms"></select>
 					</td>
 				</tr>
 				<tr><td><br></td></tr>
 				<tr>
-					<td>When realm comes up:</td>
+					<td>{{strings['realm-up']}}:</td>
 					<td>
-						<input type="radio" ng-model="options.actionUp" value="nothing" id="notify-up-action-nothing"><label for="notify-up-action-nothing">Do nothing</label><br />
-						<input type="radio" ng-model="options.actionUp" value="notify" id="notify-up-action-notify"><label for="notify-up-action-notify">Notify me</label><br />
-						<input type="radio" ng-model="options.actionUp" value="launch" id="notify-up-action-launch"><label for="notify-up-action-launch">Launch WoW</label>
+						<input type="radio" ng-model="options.actionUp" value="nothing" id="notify-up-action-nothing"><label for="notify-up-action-nothing">{{strings['action-nothing']}}</label><br />
+						<input type="radio" ng-model="options.actionUp" value="notify" id="notify-up-action-notify"><label for="notify-up-action-notify">{{strings['action-notify']}}</label><br />
+						<input type="radio" ng-model="options.actionUp" value="launch" id="notify-up-action-launch"><label for="notify-up-action-launch">{{strings['action-launch']}}</label>
 					</td>
 				</tr>
 				<tr>
-					<td>When realm goes down:</td>
+					<td>{{strings['realm-down']}}:</td>
 					<td>
-						<input type="radio" ng-model="options.actionDown" value="nothing" id="notify-down-action-nothing"><label for="notify-down-action-nothing">Do nothing</label><br />
-						<input type="radio" ng-model="options.actionDown" value="notify" id="notify-down-action-notify"><label for="notify-down-action-notify">Notify me</label><br />
-						<input type="radio" ng-model="options.actionDown" value="close" id="notify-down-action-launch"><label for="notify-down-action-launch">Close WoW</label>
+						<input type="radio" ng-model="options.actionDown" value="nothing" id="notify-down-action-nothing"><label for="notify-down-action-nothing">{{strings['action-nothing']}}</label><br />
+						<input type="radio" ng-model="options.actionDown" value="notify" id="notify-down-action-notify"><label for="notify-down-action-notify">{{strings['action-notify']}}</label><br />
 					</td>
 				</tr>
 				<tr>
-					<td colspan="2">Path to WoW:</td>
+					<td colspan="2">{{strings.path}}:</td>
 				</tr>
 				<tr>
 					<td colspan="2">
 						<input type="text" ng-model="options.path">
-						<button ng-click="selectPath()">Browse</button>
+						<button ng-click="selectPath()">{{strings.browse}}</button>
 					</td>
 				</tr>
 				<tr><td colspan="2">
-					<input type="checkbox" id="startup-load" ng-model="options.autoload"><label for="startup-load">Launch WoW Stat when your computer starts</label>
+					<input type="checkbox" id="startup-load" ng-model="options.autoload"><label for="startup-load">{{strings.startup}}</label>
 					</td></tr>
 			</table>
 		</div>
