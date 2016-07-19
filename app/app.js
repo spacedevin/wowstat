@@ -14,11 +14,11 @@ angular
 	.controller('main', ($scope, $http) => {
 		$scope.strings = strings;
 		$scope.regions = [
-			{name: 'US, Oceania, Latin America & Brazil', value: 'us'},
-			{name: 'Europe & Russia', value: 'eu'},
-			{name: 'China', value: 'cn'},
-			{name: 'Taiwan', value: 'tw'},
-			{name: 'Korea', value: 'kr'}
+			{name: strings.realms.us, value: 'us'},
+			{name: strings.realms.eu, value: 'eu'},
+			{name: strings.realms.cn, value: 'cn'},
+			{name: strings.realms.tw, value: 'tw'},
+			{name: strings.realms.kr, value: 'kr'}
 		];
 		$scope.realms = [];
 		$scope.selectPath = () => {

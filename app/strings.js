@@ -16,7 +16,14 @@ var strings = {
 		enabled: 'Enabled',
 		quit: 'Quit',
 		help: 'Help',
-		launch: 'Launch WoW'
+		launch: 'Launch WoW',
+		realms: {
+			us: 'US, Oceania, Latin America & Brazil',
+			eu: 'Europe & Russia',
+			cn: 'China',
+			tw: 'Taiwan',
+			kr: 'Korea'
+		}
 	},
 	zhcn: {
 		region: '地区',
@@ -33,7 +40,14 @@ var strings = {
 		enabled: '启用',
 		quit: '放弃',
 		help: '帮帮我',
-		launch: '启动WoW'
+		launch: '启动WoW',
+		realms: {
+			us: '美国，大洋洲，拉丁美洲和巴西',
+			eu: '欧洲及俄罗斯',
+			cn: '中国',
+			tw: '台湾',
+			kr: '韩国'
+		}
 	}
 }
 
