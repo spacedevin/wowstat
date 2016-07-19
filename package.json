@@ -14,7 +14,7 @@
     "start": "ELECTRON_DEV=1 bash -c 'cd app && electron .'",
     "icon": "sips -s format icns app/build/icon.png --out app/build/icon.icns",
     "dist": "app/node_modules/.bin/build && open dist",
-    "distwin": "app\node_modules\.bin\build"
+    "distwin": "app/node_modules/.bin/build"
   },
   "devDependencies": {
     "electron-prebuilt": "^1.2.0"
