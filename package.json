@@ -10,7 +10,7 @@
   },
   "version": "1.0.0",
   "description": "World of Warcraft realm status monitor",
-  "main": "main.js",
+  "main": "app/main.js",
   "scripts": {
     "start": "electron .",
     "postinstall": "install-app-deps",

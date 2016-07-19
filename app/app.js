@@ -7,30 +7,7 @@ const {ipcRenderer} = require('electron');
 var strings = mainProcess.setLocale(navigator.language);
 
 angular
-	.module('wowstat', []) //'ngRoute', 'ngResource'
-/*
-	.config(($routeProvider, $locationProvider) =>{
-		$routeProvider
-			.when('/', {
-				action: 'home',
-				controller: 'Home',
-				templateUrl: 'home.html'
-			})
-			.when('/view/:id', {
-				action: 'view',
-				controller: 'View',
-				templateUrl: 'view.html'
-			})
-			.otherwise({
-				redirectTo: '/'
-			});
-
-		$locationProvider.html5Mode({
-			enabled: true,
-			requireBase: false
-		});
-	})
-*/
+	.module('wowstat', [])
 	.run(($rootScope) => {
 		$rootScope.loaded = true;
 	})
@@ -109,7 +86,6 @@ angular
 			notify(arg.title, arg.body)
 		});
 
-
 		var notify = (title, body) => {
 			if (process.platform == 'darwin') {
 				new Notification(title, {
@@ -120,4 +96,3 @@ angular
 			}
 		};
 	});
-

@@ -1,4 +1,4 @@
-![WoW Stat](https://github.com/arzynik/wowstat/raw/master/logo.svg)
+![WoW Stat](https://github.com/arzynik/wowstat/raw/master/app/logo.svg)
 
 WoW Stat is a World of Warcraft server monitor utility. All you have to set is the server you wish to monitor. If your server goes down it will automatically notify you when it is back up, and even relaunch WoW for you if you wish.
 
