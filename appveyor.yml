@@ -1,0 +1,100 @@
+
+version: 3.0.{build}
+
+branches:
+  only:
+    - master
+    - appveyor
+skip_tags: false
+skip_non_tags: true
+
+image: Visual Studio 2015
+
+# scripts that are called at very beginning, before repo cloning
+init:
+  - git config --global core.autocrlf input
+
+clone_folder: c:\projects\myproject
+shallow_clone: true
+clone_depth: 1
+
+environment:
+  dev: 1
+
+cache:
+  - node_modules
+  - app/node_modules
+
+install:
+  - cmd: npm install
+  - cmd: npm run dist
+
+platform: Any CPU
+configuration: Release
+
+build:
+  verbosity: detailed
+
+before_build:
+before_package:
+after_build:
+build_script:
+
+artifacts:
+  - path: dist\win\*.exe
+
+
+#---------------------------------#
+#     deployment configuration    #
+#---------------------------------#
+
+deploy:
+    # Amazon S3 deployment provider settings
+  - provider: S3
+    access_key_id:
+      secure: ABcd==
+    secret_access_key:
+      secure: ABcd==
+    bucket: my_bucket
+    folder:
+    artifact:
+    set_public: false
+
+    # Deploy to GitHub Releases
+  - provider: GitHub
+    artifact: /.*\.nupkg/           # upload all NuGet packages to release assets
+    draft: false
+    prerelease: false
+    on:
+      branch: appveyor
+      appveyor_repo_tag: true
+
+
+# scripts to run before deployment
+before_deploy:
+
+# scripts to run after deployment
+after_deploy:
+
+# to run your custom scripts instead of provider deployments
+deploy_script:
+
+# to disable deployment
+#deploy: off
+
+on_success:
+  - do something
+
+# on build failure
+on_failure:
+  - do something
+
+# after build failure or success
+on_finish:
+  - do something
+
+notifications:
+  - provider: Email
+    to:
+      - devin@wowst.at
+    on_build_status_changed: true
