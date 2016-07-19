@@ -1,49 +1,102 @@
 <!DOCTYPE html>
 <html lang="en-us">
-  <head>
-    <meta charset="UTF-8">
-    <title>WoW Stat  - A World of Warcraft server uptime monitor</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="stylesheet" type="text/css" href="stylesheets/normalize.css" media="screen">
-    <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,700' rel='stylesheet' type='text/css'>
-    <link rel="stylesheet" type="text/css" href="stylesheets/stylesheet.css" media="screen">
-    <link rel="stylesheet" type="text/css" href="stylesheets/github-light.css" media="screen">
-  </head>
-  <body>
-    <section class="page-header">
-      <h1 class="project-name">WoW Stat</h1>
-      <h2 class="project-tagline">A World of Warcraft server uptime monitor</h2>
-      <a href="https://github.com/arzynik/wowstat" class="btn">View on GitHub</a>
-      <a href="https://github.com/arzynik/wowstat/releases/download/2.0.6/WoW.Stat.2.0.b06.dmg" class="btn">Download for OSX</a>
-      <a href="https://github.com/arzynik/wowstat/releases/download/2.0.6/WoW.Stat.Setup.2.0.b06.exe" class="btn">Download for Windows</a>
-    </section>
+	<head>
+		<meta charset="UTF-8">
+		<title>WoW Stat  - A World of Warcraft server uptime monitor</title>
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/4.2.0/normalize.min.css" media="screen">
+		<link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css?family=Lato:400,300,700">
+		<link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css">
 
-    <section class="main-content">
-      <p><img src="images/screenshot.png" alt="WoW Stat" style="float: left"></p>
+		<style>
+			body {
+				font: 10px Lato, Open Sans, Helvetica Neue, Helvetica, Arial, sans-serif;
+			}
+			.screenshot {
+				background: url(screenshot.png) no-repeat;
+				background-size: contain;
+				width: 510px;
+				height: 397px;
+				margin: 0 auto;
+			}
+			.container {
+				width: 600px;
+				margin: 0 auto;
+				margin-top: 4rem;
+			}
+			h1 {
+				font-weight: 100;
+				font-size: 3rem;
+				text-align: center;
+			}
+			h2 {
+				font-weight: 100;
+				font-size: 2rem;
+				text-align: center;
+				color: #8ba0ad;
+			}
+			.nav {
+				text-align: center;
+			}
+			a {
+				text-decoration: none;
+				color: #8ba0ad;
+			}
+			.nav a {
+				display: inline-block;
+				border-radius: 6px;
+				border: 1px solid #8ba0ad;
+				padding: .7rem 1.5rem;
+				margin: .5rem;
+				font-size: 1.2rem;
+				transition: all .2s ease;
+			}
+			.nav a:hover {
+				background: #8ba0ad;
+				color: #fff;
+			}
+			.footer {
+				color: #abb4b9;
+				text-align: center;
+				margin-top: 4rem;
+				font-size: 1rem;
+			}
+			@media (max-width: 600px) {
+				body {
+					font-size: 8px;
+				}
+				.container {
+					width: 100%;
+					padding: 0 .8rem;
+					margin-top: 1rem;
+					box-sizing: border-box;
+				}
+				h1 {
+					font-size: 2.5rem;
+				}
+				h2 {
+					font-size: 1.5rem;
+				}
+				.screenshot {
+					width: 100%;
+					background-position: top center;
+					height: 40vh;
+				}
+			}
+		</style>
+	</head>
+	<body>
+		<div class="container">
+			<h1>WoW Stat</h1>
+			<h2>A World of Warcraft server uptime monitor</h2>
+			<div class="screenshot"></div>
 
-<p><br><br>WoW Stat is a World of Warcraft server monitor utility. All you have to set is the server you wish to monitor. If your server goes down it will automatically notify you when it is back up, and even relaunch WoW for you.</p>
+			<div class="nav">
+				<a href="https://github.com/arzynik/wowstat"><i class="fa fa-github-alt"></i>&nbsp;&nbsp;GitHub</a>
+				<a href="https://github.com/arzynik/wowstat/releases"><i class="fa fa-cloud-download"></i>&nbsp;&nbsp;Download</a>
+			</div>
 
-<hr>
-
-<h3>
-<a id="status" class="anchor" href="#status" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Status</h3>
-
-<p><strong>There are builds in the <a href="https://github.com/arzynik/wowstat/releases">Release</a> section for OSX and Windows</strong></p>
-
-<p>This is a port of my C# app from 2007, this time written in HTML &amp; Javascript for <a href="http://www.appcelerator.com/mobile-app-development-products/">Titanium</a>.</p>
-
-<h3>
-<a id="license" class="anchor" href="#license" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>License</h3>
-
-<p>Free. BSD. Enjoy.</p>
-
-      <footer class="site-footer">
-        <span class="site-footer-credits"><a href="https://github.com/arzynik/wowstat">Wowstat</a> is maintained by <a href="https://github.com/arzynik">Devin</a>.</span>
-
-      </footer>
-
-    </section>
-
-
-  </body>
+			<p class="footer">Created with &#9829; by <a href="http://devin.la" target="_blank">Devin</a></p>
+		</div>
+	</body>
 </html>
