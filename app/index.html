@@ -4,8 +4,8 @@
 		<link rel="stylesheet" href="reset.css" type="text/css">
 		<link rel="stylesheet" href="style.css" type="text/css">
 	</head>
-	<body>
-		<div class="content" ng-controller="main" ng-class="{loaded: loaded}">
+	<body ng-controller="main" class="platform-{{platform}}">
+		<div ng-class="{loaded: loaded}" class="content">
 			<table>
 				<tr>
 					<td>{{strings.region}}:</td>

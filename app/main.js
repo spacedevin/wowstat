@@ -13,7 +13,6 @@ const {setLocale} = require('./strings');
 var strings = setLocale('en_US');
 
 
-
 let win;
 let tray = null;
 let options = {};
@@ -42,7 +41,9 @@ var createWindow = () => {
 	});
 
 	// dev
-	//win.webContents.openDevTools();
+	if (process.env.ELECTRON_DEV) {
+		win.webContents.openDevTools();
+	}
 };
 
 var notify = (s, realm) => {

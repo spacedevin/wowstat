@@ -10,7 +10,7 @@
   "main": "app/main.js",
   "scripts": {
     "postinstall": "cd app && npm install",
-    "start": "electron .",
+    "start": "ELECTRON_DEV=1 bash -c 'cd app && electron .'",
     "icon": "sips -s format icns app/build/icon.png --out app/build/icon.icns",
     "dist": "app/node_modules/.bin/build && open dist"
   },

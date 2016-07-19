@@ -23,10 +23,12 @@ body {
 	overflow: hidden;
 	background: #272e3b;
 }
+.platform-darwin .content {
+	padding-top: 15px;
+}
 
 .content {
 	margin: 10px;
-	padding-top: 15px;
 	display: none;
 }
 .content.loaded {

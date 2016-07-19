@@ -4,7 +4,7 @@
   "description": "World of Warcraft realm status monitor",
   "main": "main.js",
   "scripts": {
-    "start": "electron .",
+    "start": "../node_modules/.bin/electron .",
     "postinstall": "install-app-deps"
   },
   "repository": {

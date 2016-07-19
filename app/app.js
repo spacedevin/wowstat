@@ -12,6 +12,7 @@ angular
 		$rootScope.loaded = true;
 	})
 	.controller('main', ($scope, $http) => {
+		$scope.platform = process.platform;
 		$scope.strings = strings;
 		$scope.regions = [
 			{name: strings.realms.us, value: 'us'},
