@@ -12,7 +12,7 @@ There are builds in the [Release](https://github.com/arzynik/wowstat/releases) s
 ### Developing
 
 - Install the node dependencies `npm install`
-- Run the app `npm run`
+- Start the app `npm start`
 
 ### Building for deployment
 
