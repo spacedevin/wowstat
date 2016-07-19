@@ -42,7 +42,7 @@ var createWindow = () => {
 	});
 
 	// dev
-	win.webContents.openDevTools();
+	//win.webContents.openDevTools();
 };
 
 var notify = (s, realm) => {

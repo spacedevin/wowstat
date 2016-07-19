@@ -1,0 +1,35 @@
+{
+  "name": "wowstat",
+  "version": "3.0.0",
+  "description": "World of Warcraft realm status monitor",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron .",
+    "postinstall": "install-app-deps"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/arzynik/wowstat.git"
+  },
+  "keywords": [
+    "wow",
+    "world of warcraft",
+    "stat",
+    "monitor",
+    "electron"
+  ],
+  "author": "Devin Smith",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/arzynik/wowstat/issues"
+  },
+  "homepage": "http://wowst.at",
+  "dependencies": {
+    "auto-launch": "^2.0.1",
+    "electron-builder": "^5.10.1",
+    "electron-json-storage": "^2.0.0",
+    "node-notifier": "^4.6.0",
+    "open": "0.0.5",
+    "request": "^2.72.0"
+  }
+}

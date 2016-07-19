@@ -7,7 +7,7 @@ This is yet another rework, this time using the Electron framework.
 
 ### Installing
 
-There are builds in the [Release](https://github.com/arzynik/wowstat/releases) section for OSX and Windows
+There are builds in the [Release](https://github.com/arzynik/wowstat/releases) section for macOS and Windows
 
 ### Developing
 
