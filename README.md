@@ -19,7 +19,9 @@ There are builds in the [Release](https://github.com/arzynik/wowstat/releases) s
 
 - Install the node dependencies `npm install`
 - Start the app `npm start`
+- For windows use `npm run startwin`
 
 ### Build
 
-Run the Electron Builder `npm run build`
+- Run the Electron Builder `npm run dist`
+- For windows use `npm run distwin`
