@@ -21,7 +21,7 @@ let status = null;
 
 var launcher = new AutoLaunch({
 	name: 'WoW Stat',
-	path: app.getAppPath(),
+	path: process.platform === 'darwin' ? app.getAppPath() : process.execPath,
 	isHidden: false
 });
 
