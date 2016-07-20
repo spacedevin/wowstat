@@ -4,7 +4,11 @@
     "productName": "WoW Stat",
     "app-category-type": "public.app-category.utilities",
     "mac": {
-      "identity": "Devin Smith (GS29G47H7V)"
+      "identity": "Devin Smith (GS29G47H7V)",
+      "target": ["dmg","mas"]
+    },
+    "win": {
+      "target": ["nsis"]
     }
   },
   "main": "app/main.js",
@@ -12,9 +16,9 @@
     "postinstall": "cd app && npm install",
     "startwin": "electron .",
     "start": "ELECTRON_DEV=1 bash -c 'cd app && electron .'",
-    "icon": "sips -s format icns app/build/icon.png --out app/build/icon.icns",
+    "icon": "sips -s format icns build/icon.png build/icon@2x.png --out build/icon.icns",
     "dist": "app/node_modules/.bin/build && open dist",
-    "distwin": "app/node_modules/.bin/build"
+    "distwin": "app\\node_modules\\.bin\\build"
   },
   "devDependencies": {
     "electron-prebuilt": "^1.2.0"

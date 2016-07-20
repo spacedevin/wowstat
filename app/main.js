@@ -1,5 +1,5 @@
 const electron = require('electron');
-const {app, BrowserWindow, dialog, Menu, Tray} = electron;
+const {app, BrowserWindow, dialog, Menu, MenuItem, Tray} = electron;
 const AutoLaunch = require('auto-launch');
 const notifier = require('node-notifier');
 const path = require('path');
@@ -182,6 +182,96 @@ var createMenu = () => {
 
 app.on('ready', () => {
 
+	if (process.platform === 'darwin') {
+		const template = [
+			{
+				role: 'window',
+				submenu: [
+					{
+						role: 'minimize'
+					},
+					{
+						role: 'close'
+					},
+				]
+			},
+			{
+				role: 'help',
+				submenu: [
+					{
+						label: 'Learn More',
+						click() {
+							open('http://wowst.at');
+						}
+					},
+				]
+			},
+		];
+
+		// darwin specific
+		template.unshift({
+			label: 'WoW Stat',
+			submenu: [
+				{
+					role: 'about'
+				},
+				{
+					type: 'separator'
+				},
+				{
+					role: 'services',
+					submenu: []
+				},
+				{
+					type: 'separator'
+				},
+				{
+					role: 'hide'
+				},
+				{
+					role: 'hideothers'
+				},
+				{
+					role: 'unhide'
+				},
+				{
+					type: 'separator'
+				},
+				{
+					role: 'quit'
+				},
+			]
+		});
+		// Window menu.
+		template[1].submenu = [
+			{
+				label: 'Close',
+				accelerator: 'CmdOrCtrl+W',
+				role: 'close'
+			},
+			{
+				label: 'Minimize',
+				accelerator: 'CmdOrCtrl+M',
+				role: 'minimize'
+			},
+			{
+				label: 'Zoom',
+				role: 'zoom'
+			},
+			{
+				type: 'separator'
+			},
+			{
+				label: 'Bring All to Front',
+				role: 'front'
+			}
+		];
+		const menu = Menu.buildFromTemplate(template);
+		Menu.setApplicationMenu(menu);
+	};
+
+
+
 	var image = nativeImage.createFromPath(path.join(__dirname) + '/w@2x.png');
 	tray = new Tray(image);
 	tray.setToolTip('WoW Stat')
@@ -198,7 +288,7 @@ app.on('ready', () => {
 	};
 
 	changeInterval();
-/*
+	/*
 	storage.clear(() => {
 	});
 */
