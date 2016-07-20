@@ -28,7 +28,7 @@ var launcher = new AutoLaunch({
 var createWindow = () => {
 	win = new BrowserWindow({
 		width: 398,
-		height: 285,
+		height: process.platform === 'darwin' ? 285 : 300,
 		titleBarStyle: 'hidden',
 		resizable: false,
 		title: 'WoW Stat'

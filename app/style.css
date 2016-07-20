@@ -56,6 +56,10 @@ input, select, button, body {
 	color: #d0d0d0;
 }
 
+.platform-win32 select, .platform-win64 select {
+	color: #000;
+}
+
 input[type="text"] {
 	padding: 7px;
 	background: none;
