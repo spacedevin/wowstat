@@ -27,7 +27,7 @@ var launcher = new AutoLaunch({
 
 var createWindow = () => {
 	win = new BrowserWindow({
-		width: process.platform === 'darwin' ? 398 : 410,
+		width: process.platform === 'darwin' ? 398 : 425,
 		height: process.platform === 'darwin' ? 285 : 320,
 		titleBarStyle: 'hidden',
 		resizable: false,
