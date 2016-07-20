@@ -182,6 +182,8 @@ var createMenu = () => {
 
 app.on('ready', () => {
 
+	app.dock.hide();
+
 	if (process.platform === 'darwin') {
 		const template = [
 			{
