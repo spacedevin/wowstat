@@ -279,6 +279,10 @@ app.on('ready', () => {
 	tray.setToolTip('WoW Stat')
 	tray.setContextMenu(createMenu());
 
+	tray.on('clicked', function(event, bounds) {
+		showWindow();
+	});
+
 	options = {
 		region: 'us',
 		intervalUp: 5,
