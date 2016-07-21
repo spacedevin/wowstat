@@ -1,6 +1,6 @@
 {
   "name": "wowstat",
-  "version": "3.0.3",
+  "version": "3.0.4",
   "description": "World of Warcraft realm status monitor",
   "main": "main.js",
   "scripts": {
