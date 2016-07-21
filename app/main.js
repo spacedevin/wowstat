@@ -138,16 +138,20 @@ var changeInterval = () => {
 	}, options.intervalDown * 1000 * 60);
 };
 
+var showWindow = () => {
+	if (win === null) {
+		createWindow();
+	} else {
+		win.show();
+	}
+};
+
 var createMenu = () => {
 	return contextMenu = Menu.buildFromTemplate([
 		{
 			label: strings.settings,
 			click: () => {
-				if (win === null) {
-					createWindow();
-				} else {
-					win.show();
-				}
+				showWindow();
 			}
 		},
 		{
