@@ -290,10 +290,6 @@ app.on('ready', () => {
 	};
 
 	changeInterval();
-	/*
-	storage.clear(() => {
-	});
-*/
 
 	storage.get('options', (error, o) => {
 		if (error) throw error;
@@ -310,12 +306,7 @@ app.on('ready', () => {
 			console.log('options exist');
 			options = o;
 		}
-	});
 
-	createWindow();
-
-	if (process.platform === 'darwin' && app.dock) {
-		app.dock.hide();
 		setTimeout(() => {
 			if (isNew) {
 				app.show();
@@ -325,7 +316,19 @@ app.on('ready', () => {
 				win.hide();
 			}
 		},10);
+	});
+
+	createWindow();
+
+	if (process.platform === 'darwin' && app.dock) {
+		app.dock.hide();
 	}
+/*
+	setTimeout(() => {
+		storage.clear(() => {
+		});
+	},5000);
+*/
 });
 
 app.on('window-all-closed', () => {
