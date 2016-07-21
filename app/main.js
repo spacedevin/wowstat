@@ -99,7 +99,9 @@ var checkServer = () => {
 			for (var x in body) {
 				rs.push(body[x]._source);
 			}
-			win.webContents.send('server-status', rs);
+			if (win) {
+				win.webContents.send('server-status', rs);
+			}
 			exports.realms = rs;
 
 			if (options.realm) {
