@@ -98,6 +98,6 @@ angular
 		};
 
 		if (!mainProcess.isNew) {
-			notify('WoW Stat', 'Is now running in your tray');
+			notify('WoW Stat', 'Is now running');
 		}
 	});
