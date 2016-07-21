@@ -96,4 +96,8 @@ angular
 				mainProcess.notify(title, body);
 			}
 		};
+
+		if (!mainProcess.isNew) {
+			notify('WoW Stat', 'Is now running in your tray');
+		}
 	});

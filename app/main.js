@@ -18,6 +18,7 @@ let tray = null;
 let options = {};
 let interval = null;
 let status = null;
+let isNew = false;
 
 var launcher = new AutoLaunch({
 	name: 'WoW Stat',
@@ -31,7 +32,8 @@ var createWindow = () => {
 		height: process.platform === 'darwin' ? 285 : 324,
 		titleBarStyle: 'hidden',
 		resizable: false,
-		title: 'WoW Stat'
+		title: 'WoW Stat',
+		show: false
 	});
 
 	win.loadURL(`file://${__dirname}/index.html`);
@@ -184,10 +186,6 @@ app.on('ready', () => {
 
 	if (process.platform === 'darwin') {
 
-		if (app.dock) {
-			app.dock.hide();
-		}
-
 		const template = [
 			{
 				role: 'window',
@@ -276,7 +274,6 @@ app.on('ready', () => {
 	};
 
 
-
 	var image = nativeImage.createFromPath(path.join(__dirname) + '/w@2x.png');
 	tray = new Tray(image);
 	tray.setToolTip('WoW Stat')
@@ -304,6 +301,7 @@ app.on('ready', () => {
 
 		if (!Object.keys(o).length) {
 			console.log('no options');
+			isNew = true;
 			storage.set('options', options, (error) => {
 				if (error) throw error;
 				console.log(options);
@@ -314,8 +312,20 @@ app.on('ready', () => {
 		}
 	});
 
-
 	createWindow();
+
+	if (process.platform === 'darwin' && app.dock) {
+		app.dock.hide();
+		setTimeout(() => {
+			if (isNew) {
+				app.show();
+				win.show();
+			} else {
+				app.hide();
+				win.hide();
+			}
+		},10);
+	}
 });
 
 app.on('window-all-closed', () => {
@@ -389,3 +399,5 @@ exports.setLocale = (loc) => {
 	tray.setContextMenu(createMenu());
 	return exports.strings = strings;
 };
+
+exports.isNew = isNew;
