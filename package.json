@@ -18,7 +18,8 @@
     "start": "ELECTRON_DEV=1 bash -c 'cd app && electron .'",
     "icon": "sips -s format icns build/icon.png build/icon@2x.png --out build/icon.icns",
     "dist": "app/node_modules/.bin/build && open dist",
-    "distwin": "app\\node_modules\\.bin\\build"
+    "distwin": "app\\node_modules\\.bin\\build",
+    "storewin": "node_modules\\.bin\\electron-windows-store --input-directory dist\\win-unpacked  --output-directory dist\\win-store --flatten true --package-version 3.0.4 --package-name \"Wot Stat\""
   },
   "devDependencies": {
     "electron-prebuilt": "^1.2.0"
