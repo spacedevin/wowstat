@@ -309,10 +309,14 @@ app.on('ready', () => {
 
 		setTimeout(() => {
 			if (isNew) {
-				app.show();
+				if (app.show) {
+					app.show();
+				}
 				win.show();
 			} else {
-				app.hide();
+				if (app.hide) {
+					app.hide();
+				}
 				win.hide();
 			}
 		},10);
