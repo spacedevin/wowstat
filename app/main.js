@@ -9,6 +9,7 @@ const {ipcMain} = require('electron');
 const child_process = require('child_process');
 const {nativeImage} = require('electron');
 const open = require('open');
+const shortcut = require('electron-localshortcut');
 const {setLocale} = require('./strings');
 var strings = setLocale('en_US');
 
@@ -19,6 +20,8 @@ let options = {};
 let interval = null;
 let status = null;
 let isNew = false;
+let willQuit = false;
+
 
 var launcher = new AutoLaunch({
 	name: 'WoW Stat',
@@ -40,6 +43,19 @@ var createWindow = () => {
 
 	win.on('closed', () => {
 		win = null;
+	});
+
+	win.on('close', (e) => {
+		if (!willQuit) {
+			win.hide();
+			e.preventDefault();
+		}
+	});
+
+	app.on('before-quit', () => willQuit = true);
+
+	shortcut.register(win, 'CmdOrCtrl+H', () => {
+		win.hide();
 	});
 
 	// dev

@@ -5,10 +5,15 @@
     "app-category-type": "public.app-category.utilities",
     "mac": {
       "identity": "Devin Smith (GS29G47H7V)",
-      "target": ["dmg","mas"]
+      "target": [
+        "dmg",
+        "mas"
+      ]
     },
     "win": {
-      "target": ["nsis"]
+      "target": [
+        "nsis"
+      ]
     }
   },
   "main": "app/main.js",
@@ -23,5 +28,8 @@
   },
   "devDependencies": {
     "electron-prebuilt": "^1.2.0"
+  },
+  "dependencies": {
+    "electron-localshortcut": "^0.6.1"
   }
 }
