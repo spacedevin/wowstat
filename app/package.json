@@ -1,6 +1,6 @@
 {
   "name": "wowstat",
-  "version": "3.0.4",
+  "version": "3.0.5",
   "description": "World of Warcraft realm status monitor",
   "main": "main.js",
   "scripts": {
@@ -28,6 +28,7 @@
     "auto-launch": "^2.0.1",
     "electron-builder": "^5.10.1",
     "electron-json-storage": "^2.0.0",
+    "electron-localshortcut": "^0.6.1",
     "node-notifier": "^4.6.0",
     "open": "0.0.5",
     "request": "^2.72.0"

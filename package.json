@@ -28,8 +28,5 @@
   },
   "devDependencies": {
     "electron-prebuilt": "^1.2.0"
-  },
-  "dependencies": {
-    "electron-localshortcut": "^0.6.1"
   }
 }
