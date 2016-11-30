@@ -48,6 +48,30 @@ var strings = {
 			tw: '台湾',
 			kr: '韩国'
 		}
+	},
+	fr: {
+		region: 'Région',
+		realm: 'Royaume',
+		'realm-up': 'Lorsqu\'un serveur devient accessible ',
+		'realm-down': 'Lorsqu\'un serveur devient inaccessible ',
+		'action-nothing': 'Ne rien faire',
+		'action-notify': 'M\'avertir',
+		'action-launch': 'Lancer WoW',
+		path: 'Chemin de WoW',
+		browse: 'Parcourir',
+		startup: 'Lancer WoW Stat au démarrage de l\'ordinateur',
+		settings: 'Paramètres',
+		enabled: 'Activé',
+		quit: 'Quitter',
+		help: 'Aide',
+		launch: 'Lancer WoW',
+		realms: {
+			us: 'États-Unis, Océanie, Amérique latine et Brésil',
+			eu: 'Europe et Russie',
+			cn: 'Chine',
+			tw: 'Taïwan',
+			kr: 'Corée'
+		}
 	}
 }
 
